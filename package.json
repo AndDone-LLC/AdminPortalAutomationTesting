@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "description": "Common Playwright base utilities, fixtures, and page objects shared across portals",
   "license": "MIT",
-  "author": "Siddheshwar Anajekar",
+  "author": "Siddheshwar.Anajekar",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
