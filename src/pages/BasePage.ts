@@ -3,7 +3,7 @@ import type { Page, Locator } from '@playwright/test';
 import { commonUtils } from '../utils/commonUtils';
 
 export class BasePage {
-  readonly page: Page;
+  readonly page: Page; // Playwright Page object
   readonly utils: commonUtils;
 
   readonly itemsPerPageDropdown: Locator;
