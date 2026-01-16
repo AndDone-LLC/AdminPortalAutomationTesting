@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
+import { commonUtils } from './commonUtils';
 
-export class AssertionUtils {
+export class AssertionUtils extends commonUtils {
     /**
       * Verifies that the actual value matches the expected value using deep equality.
       *
@@ -328,17 +329,17 @@ export class AssertionUtils {
         expect.soft(isNotContains, finalMessage).toBeTruthy();
     }
 
-     /**
-     * Softly verifies that two values are NOT equal.
-     *
-     * Supports all data types via normalization.
-     *
-     * @typeParam T - Type of compared values
-     * @param actual - Actual value
-     * @param expected - Value that actual must NOT equal
-     * @param message - Optional custom failure message
-      */
-    static softVerifyNotEquals<T>(actual: T,expected: T,message?: string
+    /**
+    * Softly verifies that two values are NOT equal.
+    *
+    * Supports all data types via normalization.
+    *
+    * @typeParam T - Type of compared values
+    * @param actual - Actual value
+    * @param expected - Value that actual must NOT equal
+    * @param message - Optional custom failure message
+     */
+    static softVerifyNotEquals<T>(actual: T, expected: T, message?: string
     ): void {
         const normActual = this.normalize(actual);
         const normExpected = this.normalize(expected);
@@ -352,7 +353,39 @@ export class AssertionUtils {
 
         expect.soft(isNotEqual, finalMessage).toBeTruthy();
     }
-    
+
+    /**
+     * Softly verifies that date list is sorted from newest to oldest.
+     *
+     * @param actual - Dates from UI
+     * @param format - Date format
+     * @param message - Optional failure message
+     */
+    static softVerifyDatesNewestToOldest(actual: string[], format: string, message?: string
+    ): void {
+        const expected = this.sortDateNewestToOldest(actual, format);
+
+        const finalMessage = message
+            ? `${message} | Actual order: [${actual.join(' | ')}]`
+            : `Expected dates sorted from NEWEST to OLDEST but found [${actual.join(' | ')}]`;
+
+        expect.soft(actual, finalMessage).toEqual(expected);
+    }
+
+    /**
+     * Softly verifies that date list is sorted from oldest to newest.
+     */
+    static softVerifyDatesOldestToNewest(actual: string[], format: string, message?: string
+    ): void {
+        const expected = this.sortDateOldestToNewest(actual, format);
+
+        const finalMessage = message
+            ? `${message} | Actual order: [${actual.join(' | ')}]`
+            : `Expected dates sorted from OLDEST to NEWEST but found [${actual.join(' | ')}]`;
+
+        expect.soft(actual, finalMessage).toEqual(expected);
+    }
+
     /**
     * Normalizes complex data types into comparable primitive or array formats.
     *
