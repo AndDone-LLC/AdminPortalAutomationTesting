@@ -24,7 +24,11 @@
     "@playwright/test": "^1.57.0"
   },
   "dependencies": {
+
     "xlsx": "^0.18.5",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0"
+
   }
 }
