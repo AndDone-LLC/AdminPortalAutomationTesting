@@ -25,11 +25,43 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Slack Success
+      - name: Slack Success (Version + Release Note)
         if: success()
         run: |
+          RELEASE_NOTE=$(git tag -l --format='%(contents)' ${{ github.ref_name }} | head -n 1)
+
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ npm package published successfully!"}' \
+          --data "{
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"✅ *npm package published successfully!* \"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"fields\": [
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Package:*\\n@siddheshwar.anajekar/common-base\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Version:*\\n${{ github.ref_name }}\"
+                  }
+                ]
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"📝 *Release note:*\\n${RELEASE_NOTE}\"
+                }
+              }
+            ]
+          }" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Slack Failure
