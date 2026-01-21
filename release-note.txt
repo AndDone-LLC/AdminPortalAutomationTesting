@@ -1,0 +1,4 @@
+- Added fileCommonUtils
+- Methods for handling file operations
+- Functionality to count files in a folder
+- Support for multiple file formats: text, XLSX, JSON
