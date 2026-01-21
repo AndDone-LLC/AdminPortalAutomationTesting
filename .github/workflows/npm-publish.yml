@@ -3,7 +3,7 @@ name: Build & Publish npm Package
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   publish:
@@ -20,7 +20,8 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - run: npm publish
+      - name: Publish to npm
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
