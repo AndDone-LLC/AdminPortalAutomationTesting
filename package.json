@@ -1,6 +1,6 @@
 {
   "name": "@siddheshwar.anajekar/common-base",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Common Playwright base utilities, fixtures, and page objects shared across portals",
   "license": "MIT",
   "author": "Siddheshwar.Anajekar",
