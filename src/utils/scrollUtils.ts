@@ -134,7 +134,7 @@ export class ScrollUtils extends commonUtils {
     * @param clickCount - Number of clicks (1 for single, 2 for double)
     * @param description - Human-readable name for logging
     */
-    static async click(page: Page, locator: Locator, button: 'left' | 'right' | 'middle' = 'left',
+    static async clickByMouse(page: Page, locator: Locator, button: 'left' | 'right' | 'middle' = 'left',
         clickCount: number = 1, description: string = 'Element'
     ): Promise<void> {
         try {
@@ -229,18 +229,18 @@ export class ScrollUtils extends commonUtils {
         }
     }
 
-    static async isElementInViewport(locator: Locator): Promise<boolean> {
-        return await locator.evaluate(el => {
-          const rect = el.getBoundingClientRect();
-          locator.se
-          return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-          );
-        });
-      }
+    // static async isElementInViewport(locator: Locator): Promise<boolean> {
+    //     return await locator.evaluate(el => {
+    //       const rect = el.getBoundingClientRect();
+    //       locato
+    //       return (
+    //         rect.top >= 0 &&
+    //         rect.left >= 0 &&
+    //         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    //         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    //       );
+    //     });
+    //   }
       
 
 }
