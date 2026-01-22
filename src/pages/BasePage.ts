@@ -1,9 +1,9 @@
-import type { Page, Locator } from '@playwright/test';
+import type { Page, Locator } from "@playwright/test";
 
-import { commonUtils } from '../utils/commonUtils';
+import { commonUtils } from "../utils/commonUtils";
 
 export class BasePage {
-  readonly page: Page;
+  readonly page: Page; // Playwright Page object
   readonly utils: commonUtils;
 
   readonly itemsPerPageDropdown: Locator;
@@ -14,9 +14,9 @@ export class BasePage {
     this.page = page;
     this.utils = new commonUtils(page);
 
-    this.itemsPerPageDropdown = page.locator('#maxPerPage');
-    this.itemsPerPageOptions = page.locator('#maxPerPage option');
-    this.tableRows = page.locator('div.table-container table tbody tr');
+    this.itemsPerPageDropdown = page.locator("#maxPerPage");
+    this.itemsPerPageOptions = page.locator("#maxPerPage option");
+    this.tableRows = page.locator("div.table-container table tbody tr");
   }
 
   async click(locator: Locator) {
@@ -40,8 +40,8 @@ export class BasePage {
   }
 
   async navigateTo(url: string) {
-    console.log('Navigating to:', url);
-    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
+    console.log("Navigating to:", url);
+    await this.page.goto(url, { waitUntil: "domcontentloaded" });
   }
 
   // Items per page selection
@@ -50,11 +50,10 @@ export class BasePage {
     await this.utils.waitForVisible(this.tableRows.first(), 90000);
   }
 
-async getItemsPerPageOptions(): Promise<string[]> {
-  await this.itemsPerPageDropdown.click();
-  return (await this.itemsPerPageOptions.allTextContents())
-    .map(t => t.trim());
-}
-
-
+  async getItemsPerPageOptions(): Promise<string[]> {
+    await this.itemsPerPageDropdown.click();
+    return (await this.itemsPerPageOptions.allTextContents()).map((t) =>
+      t.trim(),
+    );
+  }
 }

@@ -1,0 +1,72 @@
+name: Build & Publish npm Package
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Slack Success (Version + Release Note)
+        if: success()
+        run: |
+          RELEASE_NOTE=$(git tag -l --format='%(contents)' ${{ github.ref_name }} | head -n 1)
+
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"✅ *npm package published successfully!* \"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"fields\": [
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Package:*\\n@siddheshwar.anajekar/common-base\"
+                  },
+                  {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \"*Version:*\\n${{ github.ref_name }}\"
+                  }
+                ]
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"📝 *Release note:*\\n${RELEASE_NOTE}\"
+                }
+              }
+            ]
+          }" \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Slack Failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ npm publish failed. Check GitHub Actions logs."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
