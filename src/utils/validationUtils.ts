@@ -67,54 +67,6 @@ export class ValidationUtils {
     }
 
     /**
-     * Returns the difference between two dates in years.
-     *
-     * @param date1 Start date
-     * @param date2 End date
-     * @returns Difference in days or null if invalid
-     */
-    static getDifferenceInDays(date1: Date, date2: Date): number | null {
-        try {
-            if (!this.isValidDate(date1) || !this.isValidDate(date2)) return null;
-            return differenceInDays(date2, date1);
-        } catch {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the difference between two dates in years.
-     *
-     * @param date1 Start date
-     * @param date2 End date
-     * @returns Difference in months or null if invalid
-     */
-    static getDifferenceInMonths(date1: Date, date2: Date): number | null {
-        try {
-            if (!this.isValidDate(date1) || !this.isValidDate(date2)) return null;
-            return differenceInMonths(date2, date1);
-        } catch {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the difference between two dates in years.
-     *
-     * @param date1 Start date
-     * @param date2 End date
-     * @returns Difference in years or null if invalid
-     */
-    static getDifferenceInYears(date1: Date, date2: Date): number | null {
-        try {
-            if (!this.isValidDate(date1) || !this.isValidDate(date2)) return null;
-            return differenceInYears(date2, date1);
-        } catch {
-            return null;
-        }
-    }
-
-    /**
      * Checks whether a list of dates is in ascending order (oldest → newest).
      *
      * @param dates Array of Date objects
@@ -172,7 +124,7 @@ export class ValidationUtils {
      * doesDateMatchFormat("02/10/2003", "dd/MM/yyyy") → true
      * doesDateMatchFormat("2/10/2003", "dd/MM/yyyy") → false
      */
-    static doesDateMatchFormat(dateStr: string, formatStr: string): boolean {
+    static isDateMatchFormat(dateStr: string, formatStr: string): boolean {
         try {
             if (!dateStr || !formatStr) return false;
 
@@ -198,7 +150,7 @@ export class ValidationUtils {
      * Example:
      * matchRegex("test@example.com", /^[^\s@]+@[^\s@]+\.[^\s@]+$/) → true
      */
-    static matchRegex(value: string, pattern: RegExp): boolean {
+    static isMatchedRegex(value: string, pattern: RegExp): boolean {
         try {
             if (!value || !pattern) return false;
 

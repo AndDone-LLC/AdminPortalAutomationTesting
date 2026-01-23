@@ -1,4 +1,4 @@
-import { addDays, addMonths, addYears, format, isValid, parse } from "date-fns";
+import { addDays, addMonths, addYears, differenceInDays, differenceInMonths, differenceInYears, format, isValid, parse } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 import {
@@ -689,6 +689,44 @@ export class GenerationUtils {
     }
 
     /**
+     * Adjusts the current date by adding or subtracting days, months, and/or years.
+     *
+     * Positive values add time, negative values subtract time.
+     *
+     * @param options Object containing days, months, and/or years
+     * @returns Adjusted Date or null if input date is invalid
+     *
+     * Example:
+     * adjustDate({ days: 5 })
+     * adjustDate({ months: -2 })
+     * adjustDate({ years: 1, days: 10 })
+     */
+    static adjustFromCurrentDate(options: { days?: number; months?: number; years?: number }): Date | null {
+        try {
+            const date = new Date();
+            if (!isValid(date)) return null;
+
+            let result = date;
+
+            if (options.years) {
+                result = addYears(result, options.years);
+            }
+
+            if (options.months) {
+                result = addMonths(result, options.months);
+            }
+
+            if (options.days) {
+                result = addDays(result, options.days);
+            }
+
+            return result;
+        } catch {
+            return null;
+        }
+    }
+
+    /**
      * Extracts day, month, and year from a Date object.
      *
      * @param date Date object
@@ -836,6 +874,54 @@ export class GenerationUtils {
 
             return techFee + amount;
 
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the difference between two dates in years.
+     *
+     * @param date1 Start date
+     * @param date2 End date
+     * @returns Difference in days or null if invalid
+     */
+    static getDifferenceInDays(date1: Date, date2: Date): number | null {
+        try {
+            if (!isValid(date1) || !isValid(date2)) return null;
+            return differenceInDays(date2, date1);
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the difference between two dates in years.
+     *
+     * @param date1 Start date
+     * @param date2 End date
+     * @returns Difference in months or null if invalid
+     */
+    static getDifferenceInMonths(date1: Date, date2: Date): number | null {
+        try {
+            if (!isValid(date1) || !isValid(date2)) return null;
+            return differenceInMonths(date2, date1);
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the difference between two dates in years.
+     *
+     * @param date1 Start date
+     * @param date2 End date
+     * @returns Difference in years or null if invalid
+     */
+    static getDifferenceInYears(date1: Date, date2: Date): number | null {
+        try {
+            if (!isValid(date1) || !isValid(date2)) return null;
+            return differenceInYears(date2, date1);
         } catch {
             return null;
         }
