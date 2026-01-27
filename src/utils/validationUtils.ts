@@ -159,4 +159,21 @@ export class ValidationUtils {
             return false;
         }
     }
+
+    /**
+   * Validates whether the actual transaction/payment ID matches
+   * the expected partially visible and hidden (masked) pattern.
+   * @since 27-01-2026
+   * @param actualId   String (Full transaction/payment ID)
+   * @param expectedId String (Expected masked transaction/payment ID)
+   * @returns true if the masked actual ID matches the expected ID, otherwise false
+   */
+  static isTransactionIdMatchingPartialVisibleHiddenPattern(
+    actualId: string,
+    expectedId: string
+  ): boolean {
+    const maskedActualId = `${actualId.slice(0, 6)}...${actualId.slice(-6)}`;
+    return expectedId === maskedActualId;
+  }
+
 }
