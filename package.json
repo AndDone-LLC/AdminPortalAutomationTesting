@@ -24,10 +24,12 @@
     "@playwright/test": "^1.57.0"
   },
   "dependencies": {
-    "xlsx": "^0.18.5",
-    "xml2js": "^0.6.2",
+    "@siddheshwar.anajekar/common-base": "^3.0.2",
+    "anddonejs1": "^3.0.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2"
   }
 }

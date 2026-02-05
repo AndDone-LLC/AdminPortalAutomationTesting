@@ -1,0 +1,32 @@
+import { Page } from "@playwright/test";
+import { commonUtils } from "@siddheshwar.anajekar/common-base";
+import { BasePage } from "./BasePage";
+
+export class AdminPage extends BasePage {
+    public utils: commonUtils;
+
+    constructor(page: Page) {
+        super(page);
+        this.utils = new commonUtils(page);
+    }
+
+    usernameInput = this.page.getByRole('textbox', { name: '*Username' });
+    passwordInput = this.page.getByRole('textbox', { name: '*Password' });
+    loginBtn = this.page.getByRole('button', { name: 'Sign In' });
+
+    /**
+     * method to login
+     * @param username of the admin
+     * @param password of the admin
+     */
+    async login(username: string, password: string) {
+
+        await commonUtils.fill(this.page, this.usernameInput, username);
+        await commonUtils.fill(this.page, this.passwordInput, password);
+        await commonUtils.click(this.page, this.loginBtn);
+
+        await this.page.waitForURL('**/admin/**', { timeout: 30000 });
+    }
+
+    
+}

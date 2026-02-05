@@ -1,0 +1,7 @@
+{
+    "getPrograms": {
+        "method": "GET",
+        "path": "/pf/merchants/{merchantId}/programs",
+        "baseUrlKey": "BaseURL2"
+    }
+}
