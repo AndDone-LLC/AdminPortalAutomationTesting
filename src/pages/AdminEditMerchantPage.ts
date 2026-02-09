@@ -1,13 +1,14 @@
 import { expect, Page } from "@playwright/test";
-import { commonUtils, TableUtils } from "@siddheshwar.anajekar/common-base";
+// import { commonUtils, TableUtils } from "@siddheshwar.anajekar/common-base";
+import { CommonUtils, TableUtils } from '@anddone/coretestautomation/dist';
 import { BasePage } from "./BasePage";
 
 export class AdminEditMerchantPage extends BasePage {
-    public utils: commonUtils;
+    public utils: CommonUtils;
 
     constructor(page: Page) {
         super(page);
-        this.utils = new commonUtils(page);
+        this.utils = new CommonUtils();
     }
 
     // ===== Sidebar containers =====
@@ -247,7 +248,6 @@ export class AdminEditMerchantPage extends BasePage {
             error: null
         };
     }
-
 
     /**
      * method to handle no result and then sync

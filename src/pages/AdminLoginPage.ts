@@ -1,13 +1,14 @@
 import { Page } from "@playwright/test";
-import { commonUtils } from "@siddheshwar.anajekar/common-base";
+// import { commonUtils } from "@siddheshwar.anajekar/common-base";
+import { CommonUtils } from '@anddone/coretestautomation/dist';
 import { BasePage } from "./BasePage";
 
 export class AdminPage extends BasePage {
-    public utils: commonUtils;
+    public utils: CommonUtils;
 
     constructor(page: Page) {
         super(page);
-        this.utils = new commonUtils(page);
+        this.utils = new CommonUtils();
     }
 
     usernameInput = this.page.getByRole('textbox', { name: '*Username' });

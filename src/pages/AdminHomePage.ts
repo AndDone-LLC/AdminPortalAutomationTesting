@@ -1,7 +1,8 @@
 import { expect, Locator, Page } from "@playwright/test";
 import { commonUtils } from "@siddheshwar.anajekar/common-base";
 import { BasePage } from "./BasePage";
-import { TableUtils } from "@siddheshwar.anajekar/common-base";
+// import { TableUtils } from "@siddheshwar.anajekar/common-base";
+import { CommonUtils, TableUtils } from '@anddone/coretestautomation/dist';
 
 export class AdminHomePage extends BasePage {
     public utils: commonUtils;
@@ -72,6 +73,8 @@ export class AdminHomePage extends BasePage {
      */
     async searchByDBAAndValidate(dbaName: string) {
 
+        await this.page.waitForTimeout(2000);
+        
         await this.searchInput.fill(dbaName);
         await this.page.waitForTimeout(1000);
         await this.searchInput.press('Enter');
@@ -118,7 +121,7 @@ export class AdminHomePage extends BasePage {
      * method to open action dropdown and validate
      */
     async openActionDropdownAndValidate() {
-        await TableUtils.clickEllipsisByRowIndex(this.page, this.table, 1);
+        await TableUtils.clickEllipsisByRowIndex(this.table, 1);
         await expect(this.editSubMerchantOption).toBeVisible();
         await expect(this.emulateOption).toBeVisible();
         await expect(this.viewTransactionsOption).toBeVisible();

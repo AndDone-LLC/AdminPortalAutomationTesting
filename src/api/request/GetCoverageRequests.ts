@@ -12,8 +12,8 @@ export class GetCoverageRequest extends BaseAPI {
         const apiUrl =
             this.getBaseUrl2() +
             `/pf/merchants/${merchantId}/coverage` +
-            `?pageSize=10000` +
-            `&pageIndex=1` +
+            `?pageSize=100` + `&pageIndex=1` +
+            // `?pageIndex=1` +
             `&sortField=name` +
             `&ascending=true` +
             `&search=` +
