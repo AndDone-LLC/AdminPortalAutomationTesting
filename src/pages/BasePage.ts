@@ -9,6 +9,7 @@ export class BasePage {
   readonly itemsPerPageDropdown: Locator;
   readonly itemsPerPageOptions: Locator;
   readonly tableRows: Locator;
+  readonly loaderSign:Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +18,7 @@ export class BasePage {
     this.itemsPerPageDropdown = page.locator("#maxPerPage");
     this.itemsPerPageOptions = page.locator("#maxPerPage option");
     this.tableRows = page.locator("div.table-container table tbody tr");
+    this.loaderSign=page.locator("//img[contains(@src,'loading-icon.svg')]");
   }
 
   // async click(locator: Locator) {

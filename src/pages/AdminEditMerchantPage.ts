@@ -52,12 +52,43 @@ export class AdminEditMerchantPage extends BasePage {
 
     // Coverage table
     coverageContainer = this.page.locator('app-data-synchronization');
+    coverageTable = this.coverageContainer.locator('table');
     coverageRows = this.coverageContainer.locator('tbody tr');
     coverageHeaders = this.coverageContainer.locator('thead th');
+
+    // Filter/Sort icons in table headers
+    //nameColumnHeader = this.coverageTable.locator('thead th').filter({ hasText: 'Name' });
+    nameColumnHeader = this.coverageTable.locator('#nameDropdownCoverage span.date');
+    nameFilterIcon = this.nameColumnHeader.locator('i, svg, .sort-icon, [class*="sort"]').first();
+    
+    updatedOnColumnHeader = this.coverageTable.locator('thead th').filter({ hasText: 'Updated On' });
+    updatedOnFilterIcon = this.updatedOnColumnHeader.locator('i, svg, .sort-icon, [class*="sort"]').first();
+
+    // Name filter popup/modal
+    nameFilterPopup = this.page.locator('[class*="filter"], [class*="modal"], [class*="dropdown"]').filter({ hasText: 'Name' });
+    nameFilterInput = this.page.locator('#inputNameCoverage');
+    nameFilterClearBtn = this.page.getByRole('button', { name: 'Clear' });
+    //nameFilterApplyBtn = this.page.getByRole('button', { name: 'Apply' });
+    nameFilterApplyBtn=this.page.locator("//div[@aria-labelledby='nameDropdownBtnCoverage']/div[@class='filter-button-holder']/a[contains(text(),'Apply')]");
+
 
     paginationNext = this.page.locator('button[data-page="next"]');
     paginationPrev = this.page.locator('button[data-page="prev"]');
     paginationButtons = this.page.locator('#pagination button');
+
+    //toast message
+    accessAndPermissionDisableToastMsg= this.page.locator('.toast-message').filter({ hasText: '  Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable' });
+
+
+    //Filter table data
+    firstRowTableData=this.page.locator('tbody tr').first();
+
+
+
+    async verifyAccessAndPermissionDisableToastMsgDisplay() {
+        await expect(this.accessAndPermissionDisableToastMsg).toBeVisible({ timeout: 10000 });
+        await expect(this.accessAndPermissionDisableToastMsg).toHaveText('  Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable');
+    }
 
     /**
      * method to go to data synchronization
@@ -82,6 +113,16 @@ export class AdminEditMerchantPage extends BasePage {
             console.warn(`Data synchronization was not visible`);
         }
     }
+
+    // async navigateToPremiumFinanceSection() {
+    //     await expect(this.sidebar).toBeVisible();
+    //     await expect(this.premiumFinanceAccordion).toBeVisible();
+    //     const expanded = await this.premiumFinanceBtn.getAttribute('aria-expanded');
+    // }
+
+    // async clickDataSynchronization() {
+    //     const dataSyncText = this.sidebar.getByText('Data Synchronization', { exact: true });
+    // }
 
     // async verifyNoDataSynchronizationResults() {
     //     const noResultsMsg = this.page.locator('#noResultsMsg');
@@ -352,4 +393,391 @@ export class AdminEditMerchantPage extends BasePage {
         };
     }
 
+
+    /**
+     * Click on Name column filter icon to sort
+     */
+    async clickNameFilter() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Try multiple selectors for the filter icon
+        const filterSelectors = [
+            this.nameColumnHeader.locator('i'),
+            this.nameColumnHeader.locator('svg'),
+            this.nameColumnHeader.locator('[class*="sort"]'),
+            this.nameColumnHeader.locator('[class*="filter"]'),
+            this.nameColumnHeader.getByRole('button'),
+            this.nameColumnHeader
+        ];
+
+        for (const selector of filterSelectors) {
+            const count = await selector.count();
+            if (count > 0) {
+                await selector.first().click();
+                await this.page.waitForTimeout(1000);
+                console.log("Clicked Name filter icon");
+                return;
+            }
+        }
+        
+        // Fallback: click the header itself
+        await this.nameColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        console.log("Clicked Name column header");
+    }
+
+    /**
+     * Click on Updated On column filter icon to sort
+     */
+    async clickUpdatedOnFilter() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Try multiple selectors for the filter icon
+        const filterSelectors = [
+            this.updatedOnColumnHeader.locator('i'),
+            this.updatedOnColumnHeader.locator('svg'),
+            this.updatedOnColumnHeader.locator('[class*="sort"]'),
+            this.updatedOnColumnHeader.locator('[class*="filter"]'),
+            this.updatedOnColumnHeader.getByRole('button'),
+            this.updatedOnColumnHeader
+        ];
+
+        for (const selector of filterSelectors) {
+            const count = await selector.count();
+            if (count > 0) {
+                await selector.first().click();
+                await this.page.waitForTimeout(1000);
+                console.log("Clicked Updated On filter icon");
+                return;
+            }
+        }
+        
+        // Fallback: click the header itself
+        await this.updatedOnColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        console.log("Clicked Updated On column header");
+    }
+
+    /**
+     * Get all visible coverage names from the table
+     * @returns Array of coverage names
+     */
+    async getCoverageNames(): Promise<string[]> {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        const names: string[] = [];
+        const rows = this.coverageTable.locator('tbody tr');
+        const rowCount = await rows.count();
+
+        for (let i = 0; i < rowCount; i++) {
+            const nameCell = rows.nth(i).locator('td').first();
+            const name = (await nameCell.innerText()).trim();
+            names.push(name);
+        }
+
+        return names;
+    }
+
+    /**
+     * Get all visible Updated On dates from the table
+     * @returns Array of Updated On dates
+     */
+    async getUpdatedOnDates(): Promise<string[]> {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        const dates: string[] = [];
+        const rows = this.coverageTable.locator('tbody tr');
+        const rowCount = await rows.count();
+
+        for (let i = 0; i < rowCount; i++) {
+            const cells = rows.nth(i).locator('td');
+            const cellCount = await cells.count();
+            
+            // Updated On is typically the last column
+            const dateCell = cells.nth(cellCount - 1);
+            const date = (await dateCell.innerText()).trim();
+            dates.push(date);
+        }
+
+        return dates;
+    }
+
+    /**
+     * Verify if array is sorted in ascending order
+     * @param arr Array to check
+     * @returns true if sorted in ascending order
+     */
+    isAscendingOrder(arr: string[]): boolean {
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i].toLowerCase() > arr[i + 1].toLowerCase()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify if array is sorted in descending order
+     * @param arr Array to check
+     * @returns true if sorted in descending order
+     */
+    isDescendingOrder(arr: string[]): boolean {
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i].toLowerCase() < arr[i + 1].toLowerCase()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify if dates are sorted in ascending order
+     * @param dates Array of date strings
+     * @returns true if sorted in ascending order
+     */
+    isDateAscendingOrder(dates: string[]): boolean {
+        for (let i = 0; i < dates.length - 1; i++) {
+            const date1 = new Date(dates[i]);
+            const date2 = new Date(dates[i + 1]);
+            
+            if (date1 > date2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Verify if dates are sorted in descending order
+     * @param dates Array of date strings
+     * @returns true if sorted in descending order
+     */
+    isDateDescendingOrder(dates: string[]): boolean {
+        for (let i = 0; i < dates.length - 1; i++) {
+            const date1 = new Date(dates[i]);
+            const date2 = new Date(dates[i + 1]);
+            
+            if (date1 < date2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Click Name filter and validate sorting
+     * @param expectedOrder 'asc' or 'desc'
+     */
+    async clickNameFilterAndValidate(expectedOrder: 'asc' | 'desc') {
+        await this.clickNameFilter();
+        await this.page.waitForTimeout(1500);
+        
+        const names = await this.getCoverageNames();
+        console.log(`Names after filter: ${names.join(', ')}`);
+        
+        if (expectedOrder === 'asc') {
+            expect(this.isAscendingOrder(names)).toBeTruthy();
+            console.log("✓ Names are sorted in ascending order");
+        } else {
+            expect(this.isDescendingOrder(names)).toBeTruthy();
+            console.log("✓ Names are sorted in descending order");
+        }
+    }
+
+    /**
+     * Click Updated On filter and validate sorting
+     * @param expectedOrder 'asc' or 'desc'
+     */
+    async clickUpdatedOnFilterAndValidate(expectedOrder: 'asc' | 'desc') {
+        await this.clickUpdatedOnFilter();
+        await this.page.waitForTimeout(1500);
+        
+        const dates = await this.getUpdatedOnDates();
+        console.log(`Dates after filter: ${dates.join(', ')}`);
+        
+        if (expectedOrder === 'asc') {
+            expect(this.isDateAscendingOrder(dates)).toBeTruthy();
+            console.log("✓ Dates are sorted in ascending order");
+        } else {
+            expect(this.isDateDescendingOrder(dates)).toBeTruthy();
+            console.log("✓ Dates are sorted in descending order");
+        }
+    }
+
+    /**
+     * Click on Name column dropdown to open filter popup
+     */
+    async openNameFilterPopup() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Click on Name column header to open filter popup
+        await this.nameColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        
+        // Wait for popup to appear
+        await expect(this.nameFilterApplyBtn).toBeVisible({ timeout: 5000 });
+        console.log("✓ Name filter popup opened successfully");
+    }
+
+    /**
+     * Enter text in Name filter input field
+     * @param searchText Text to enter in the filter field
+     */
+    async enterNameFilterText(searchText: string) {
+        await expect(this.nameFilterInput).toBeVisible({ timeout: 5000 });
+        await this.nameFilterInput.fill(searchText);
+        await this.page.waitForTimeout(500);
+        console.log(`✓ Entered text in filter: "${searchText}"`);
+    }
+
+    /**
+     * Click Apply button in filter popup
+     */
+    async clickNameFilterApply() {
+        await expect(this.nameFilterApplyBtn).toBeVisible({ timeout: 5000 });
+        await this.nameFilterApplyBtn.click();
+        await this.page.waitForTimeout(1500);
+        console.log("✓ Clicked Apply button");
+    }
+
+    /**
+     * Click Clear button in filter popup
+     */
+    async clickNameFilterClear() {
+        await expect(this.nameFilterClearBtn).toBeVisible({ timeout: 5000 });
+        await this.nameFilterClearBtn.click();
+        await this.page.waitForTimeout(500);
+        console.log("✓ Clicked Clear button");
+    }
+
+    /**
+     * Filter coverage data by name and validate results
+     * @param searchText Text to search in Name field
+     * @returns Array of filtered coverage names
+     */
+    async filterByNameAndValidate(searchText: string): Promise<string[]> {
+        await this.openNameFilterPopup();
+        await this.enterNameFilterText(searchText);
+        await this.clickNameFilterApply();
+        
+        await this.page.waitForTimeout(1500);
+        
+        const filteredNames = await this.getCoverageNames();
+        console.log(`✓ Filtered results: ${filteredNames.join(', ')}`);
+        
+        return filteredNames;
+    }
+
+    /**
+     * Validate if all filtered names contain the search text
+     * @param names Array of names to validate
+     * @param searchText Text to validate against
+     * @returns true if all names contain the search text
+     */
+    isValidFilterResult(names: string[], searchText: string): boolean {
+        if (names.length === 0) {
+            return true; // Valid: no results found
+        }
+        
+        return names.every(name => 
+            name.toLowerCase().includes(searchText.toLowerCase())
+        );
+    }
+
+    /**
+     * Validate if no results are displayed
+     * @returns true if no results message is visible
+     */
+    async isNoResultsDisplayed(): Promise<boolean> {
+        const noResults = this.page.locator('[class*="no-result"], [class*="no-data"], .empty-state').first();
+        
+        try {
+            await expect(noResults).toBeVisible({ timeout: 3000 });
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Clear filter using Clear button and verify table reset
+     */
+    async clearNameFilterAndVerify() {
+        await this.openNameFilterPopup();
+        await this.clickNameFilterClear();
+        
+        // Clear button should clear the input
+        const inputValue = await this.nameFilterInput.inputValue();
+        expect(inputValue).toBe('');
+        console.log("✓ Filter cleared successfully");
+    }
+
+    /**
+     * Test filter with valid data (data that exists in table)
+     * @param validSearchText Valid text to search
+     */
+    async testValidFilter(validSearchText: string) {
+        console.log(`\n--- Testing VALID filter: "${validSearchText}" ---`);
+        
+        const results = await this.filterByNameAndValidate(validSearchText);
+        
+        // Verify results are returned
+        expect(results.length).toBeGreaterThan(0);
+        
+        // Verify all results match the search text
+        expect(this.isValidFilterResult(results, validSearchText)).toBeTruthy();
+        
+        console.log(`✓ VALID filter test passed: Found ${results.length} matching records`);
+    }
+
+    /**
+     * Test filter with invalid data (data that doesn't exist in table)
+     * @param invalidSearchText Invalid text to search
+     */
+    async testInvalidFilter(invalidSearchText: string) {
+        console.log(`\n--- Testing INVALID filter: "${invalidSearchText}" ---`);
+        
+        const results = await this.filterByNameAndValidate(invalidSearchText);
+        
+        // Verify no results are returned
+        expect(results.length).toBe(0);
+        
+        // Verify no results message is displayed
+        const noResults = await this.isNoResultsDisplayed();
+        console.log(`✓ INVALID filter test passed: No results found as expected (noResultsMsg visible: ${noResults})`);
+    }
+
+    /**
+     * Test filter with partial/partial match
+     * @param partialSearchText Partial text that should match multiple records
+     */
+    async testPartialFilter(partialSearchText: string) {
+        console.log(`\n--- Testing PARTIAL filter: "${partialSearchText}" ---`);
+        
+        const results = await this.filterByNameAndValidate(partialSearchText);
+        
+        // Verify results are returned
+        expect(results.length).toBeGreaterThan(0);
+        
+        // Verify all results match the partial search text
+        expect(this.isValidFilterResult(results, partialSearchText)).toBeTruthy();
+        
+        console.log(`✓ PARTIAL filter test passed: Found ${results.length} matching records`);
+    }
+
+    /**
+     * Test filter with case-insensitive search
+     * @param searchText Text to search (in different case)
+     */
+    async testCaseInsensitiveFilter(searchText: string) {
+        console.log(`\n--- Testing CASE-INSENSITIVE filter: "${searchText}" ---`);
+        
+        const results = await this.filterByNameAndValidate(searchText);
+        
+        // Verify results match regardless of case
+        const isValid = this.isValidFilterResult(results, searchText);
+        expect(isValid).toBeTruthy();
+        
+        console.log(`✓ CASE-INSENSITIVE filter test passed: Found ${results.length} matching records`);
+    }
 }

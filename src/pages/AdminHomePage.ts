@@ -1,15 +1,23 @@
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { commonUtils } from "@siddheshwar.anajekar/common-base";
 import { BasePage } from "./BasePage";
 import { TableUtils } from "@siddheshwar.anajekar/common-base";
 
 export class AdminHomePage extends BasePage {
     public utils: commonUtils;
+    //readonly logo: Locator;
 
     constructor(page: Page) {
         super(page);
+           
+        // Logo locator using the provided xpath
+        //this.logo = page.locator("//img[contains(@src,'logo-new.png') and @alt='homepage']");
+
         this.utils = new commonUtils(page);
     }
+
+    //HomePage logo
+    logo = this.page.locator("//img[contains(@src,'logo-new.png') and @alt='homepage']");
 
     // locators for admin home page
     searchInput = this.page.getByRole('searchbox', { name: 'Company Name, DBA Name, Admin Name, Ally Name, ID or Email' });
@@ -50,6 +58,14 @@ export class AdminHomePage extends BasePage {
     tableRows = this.page.locator('#tableBody tr');
     dbaCells = this.page.locator('#tableBody tr td:nth-child(4)');
 
+
+      /**
+     * Verify that the homepage logo is displayed
+     */
+    async isLogoDisplayed(): Promise<boolean> {
+        return await this.logo.isVisible();
+    }
+
     /**
      * Method to search DBAName and validate whether it is present in table or not
      * @param dbaName to be searched
@@ -57,10 +73,12 @@ export class AdminHomePage extends BasePage {
     async searchByDBAAndValidate(dbaName: string) {
 
         await this.searchInput.fill(dbaName);
+        await this.page.waitForTimeout(1000);
         await this.searchInput.press('Enter');
 
         await expect
             .poll(async () => {
+                //await this.tableRows.first().waitFor({ state: 'visible', timeout: 5000 });
                 const texts = await TableUtils.getColumnValuesByHeader(this.table, "DBA Name");
                 return texts.some(text =>
                     text.toLowerCase().includes(dbaName.toLowerCase())
