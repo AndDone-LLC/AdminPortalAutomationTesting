@@ -133,7 +133,7 @@ export class AdminEditMerchantPage extends BasePage {
         }
 
         const count = await programTabs.count();
-await expect(this.accessAndPermissionDisableToastMsg).toHaveText('  Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable');
+        await expect(this.accessAndPermissionDisableToastMsg).toHaveText('Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable');
         if (count === 0) {
             console.log('No program tabs found');
             return;
