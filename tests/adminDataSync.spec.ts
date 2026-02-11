@@ -7,6 +7,7 @@ import { LoginResponse } from 'anddonejs1/dist/api/response/login.response';
 import { GetProgramsRequest } from '../src/api/request/GetProgramsRequest';
 import { GetCoverageRequest } from '../src/api/request/GetCoverageRequests';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
+import { CoveragePage } from '../src/pages/CoveragePage';
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
@@ -49,9 +50,10 @@ test('UI Flow - Extract Coverage Data', async ({ page }) => {
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
+    const coveragePage = new CoveragePage(page);
     await editMerchantPage.goToDataSynchronization();
     await editMerchantPage.handleNoResultsAndSyncIfNeeded();
-    const coverageData = await editMerchantPage.getAllCoverageData();
+    const coverageData = await coveragePage.getAllCoverageData();
 
     console.log("UI Coverage Data:");
     console.log(JSON.stringify(coverageData, null, 2));
@@ -172,9 +174,10 @@ test('Validate Coverage Data - UI vs API', async ({ page, request }) => {
   await adminHomePage.openActionDropdownAndValidate();
   await adminHomePage.clickEditSubMerchantDetails();
   const editMerchantPage = new AdminEditMerchantPage(page);
+  const coveragePage = new CoveragePage(page);
   await editMerchantPage.goToDataSynchronization();
   await editMerchantPage.handleNoResultsAndSyncIfNeeded();
-  const uiCoverageData = await editMerchantPage.getAllCoverageData();
+  const uiCoverageData = await coveragePage.getAllCoverageData();
 
   // ---------- API FLOW ----------
 

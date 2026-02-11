@@ -22,9 +22,9 @@ export class AdminPage extends BasePage {
      */
     async login(username: string, password: string) {
 
-        await commonUtils.fill(this.page, this.usernameInput, username);
-        await commonUtils.fill(this.page, this.passwordInput, password);
-        await commonUtils.click(this.page, this.loginBtn);
+        await CommonUtils.fill(this.usernameInput, username);
+        await CommonUtils.fill(this.passwordInput, password);
+        await CommonUtils.click(this.loginBtn);
         // Wait for URL change instead of networkidle
         await this.page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 }).catch(() => {});
         await this.page.waitForURL('**/admin/**', { timeout: 30000 });
