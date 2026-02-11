@@ -4,6 +4,7 @@ import { AdminHomePage } from '../src/pages/AdminHomePage';
 import { AdminEditMerchantPage } from '../src/pages/AdminEditMerchantPage';
 import { CoveragePage } from '../src/pages/CoveragePage';
 
+
 test.describe('Coverage Name Filter Popup', () => {
     let adminPage: AdminPage;
     let adminHomePage: AdminHomePage;
@@ -56,7 +57,7 @@ test.describe('Coverage Name Filter Popup', () => {
         console.log(" Coverage table is visible");
     });
 
-    test.only('AN -27116 should open Name filter popup when clicking on Name column dropdown', async ({ page }) => {
+    test('AN -27116 should open Name filter popup when clicking on Name column dropdown', async ({ page }) => {
         // Get initial data to know what to search for
         const initialNames = await coveragePage.getCoverageNames();
         console.log(`Initial names in table: ${initialNames.join(', ')}`);
@@ -80,6 +81,73 @@ test.describe('Coverage Name Filter Popup', () => {
         //should handle special characters in filter - space
         await coveragePage.enterNameInFilterAndApply('TRUCK LIABILITY');
     });
+
+    test('AN-XXXX should filter by IPFS Mapped YES and verify all pages show only YES records', async ({ page }) => {
+        console.log('\n=== Testing IPFS Mapped Filter: YES ===');
+        
+        // Apply IPFS Mapped = YES filter
+        await coveragePage.selectIpfsMappedFilterAndApply('YES');
+        
+        // Verify all records across all pagination pages have IPFS Mapped = YES
+        await coveragePage.verifyIpfsMappedValuesAcrossAllPages('YES');
+
+        await coveragePage.clickToCloseIpfsFilterPopup();
+       
+        // Apply IPFS Mapped = NO filter
+        await coveragePage.selectIpfsMappedFilterAndApply('NO');
+        
+        // Verify all records across all pagination pages have IPFS Mapped = NO
+        await coveragePage.verifyIpfsMappedValuesAcrossAllPages('NO');
+
+    });
+
+
+    test('AN-XXXX should filter by Status Active and verify all pages show only Active records', async ({ page }) => {
+        console.log('\n=== Testing Status Filter: Active ===');
+        
+        // Apply Status = Active filter
+        await coveragePage.selectStatusFilterAndApply('Active');
+        
+        // Verify all records across all pagination pages have Status = Active
+        await coveragePage.verifyStatusValuesAcrossAllPages('Active');
+
+         // Apply Status = Inactive filter
+        await coveragePage.selectStatusFilterAndApply('Inactive');
+        
+        // Verify all records across all pagination pages have Status = Inactive
+        await coveragePage.verifyStatusValuesAcrossAllPages('Inactive');
+
+    });
+
+    test.only('AN-XXXX should filter by Portal Status Active and verify all pages show only Active records', async ({ page }) => {
+        console.log('\n=== Testing Portal Status Filter: Active ===');
+        
+        // Apply Portal Status = Active filter
+        await coveragePage.selectPortalStatusFilterAndApply('Active');
+        
+        // Verify all records across all pagination pages have Portal Status = Active
+        await coveragePage.verifyPortalStatusValuesAcrossAllPages('Active');
+
+        await coveragePage.clickToClosePortalStatusFilterPopup();
+
+         // Apply Portal Status = Inactive filter
+        await coveragePage.selectPortalStatusFilterAndApply('Inactive');
+        
+        // Verify all records across all pagination pages have Portal Status = Inactive
+        await coveragePage.verifyPortalStatusValuesAcrossAllPages('Inactive');
+    });
+
+    // test('AN-XXXX should filter by Portal Status Inactive and verify all pages show only Inactive records', async ({ page }) => {
+    //     console.log('\n=== Testing Portal Status Filter: Inactive ===');
+        
+    //     // Apply Portal Status = Inactive filter
+    //     await coveragePage.selectPortalStatusFilterAndApply('Inactive');
+        
+    //     // Verify all records across all pagination pages have Portal Status = Inactive
+    //     await coveragePage.verifyPortalStatusValuesAcrossAllPages('Inactive');
+    // });
+
+    
 
 
     // test('should restore all data after clearing filter - TRUCK', async ({ page }) => {
@@ -285,6 +353,7 @@ test.describe('Coverage Name Filter Popup', () => {
         console.log('\n=== FILTER AND PAGINATION TOGETHER TEST COMPLETED ===');
     });
 
+
 });
 
 test.describe('Coverage Empty State', () => {
@@ -360,4 +429,10 @@ test.describe('Coverage Empty State', () => {
         expect(names.length).toBe(0);
         console.log('✓ Empty state verified: No Results Found and no data rows');
     });
+
+    test('Should verify validation message for access setting & permission setting off', async({ page })=>{
+        await adminEditMerchantPage.goToDataSynchronization();
+        await adminEditMerchantPage.handleNoResultsAndSyncIfNeeded();
+        await adminEditMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
+    }); 
 });

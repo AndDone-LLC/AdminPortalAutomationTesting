@@ -36,6 +36,27 @@ export class CoveragePage extends BasePage {
     nameFilterApplyBtn=this.page.locator("//div[@aria-labelledby='nameDropdownBtnCoverage']/div[@class='filter-button-holder']/a[contains(text(),'Apply')]");
     nameFilterClearBtn=this.page.locator("//div[@aria-labelledby='nameDropdownBtnCoverage']/div[@class='filter-button-holder']/a[contains(text(),'Clear')]");
     
+    // IPFS Mapped filter
+    ipfsMappedColumnHeader = this.coverageTable.locator('#ipfsMappedDropdownCoverage .date');
+    //ipfsMappedDropdownBtn = this.page.locator('#ipfsMappedDropdownBtn, button').filter({ hasText: 'IPFS Mapped' }).first();
+    ipfsMappedYesOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//span").first();
+    ipfsMappedNoOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//span").last();
+    ipfsMappedApplyBtn = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//following::div/a").first();
+    ipfsCloseBtn=this.page.locator("//button[@id='ipfsMappedDropdownCoverage']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
+    // Status filter
+    statusColumnHeader = this.coverageTable.locator('#statusDropdownCoverage .date');
+    statusActiveOption = this.page.locator("//div[@aria-labelledby='statusDropdownCoverage']//span[contains(text(),'Active')]");
+    statusInactiveOption = this.page.locator("//div[@aria-labelledby='statusDropdownCoverage']//span[contains(text(),'Inactive')]");
+    statusApplyBtn = this.page.locator("//div[@aria-labelledby='statusDropdownCoverage']//following::div/a").first();
+    statusCloseBtn = this.page.locator("//button[@id='statusDropdownCoverage']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
+    
+    // Portal Status filter
+    portalStatusColumnHeader = this.coverageTable.locator('#portalStatusDropdownCoverage .date');
+    portalStatusActiveOption = this.page.locator("//div[@aria-labelledby='portalStatusDropdownCoverage']//span[contains(text(),'Active')]");
+    portalStatusInactiveOption = this.page.locator("//div[@aria-labelledby='portalStatusDropdownCoverage']//span[contains(text(),'Inactive')]");
+    portalStatusApplyBtn = this.page.locator("//div[@aria-labelledby='portalStatusDropdownCoverage']//following::div/a").first();
+    portalStatusCloseBtn = this.page.locator("//button[@id='portalStatusDropdownCoverage']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
+    
     //Filter table data
     firstRowTableData=this.page.locator('tbody tr').first();
     tableData=this.page.locator('tbody tr td');
@@ -88,6 +109,28 @@ export class CoveragePage extends BasePage {
         await expect(this.nameFilterApplyBtn).toBeVisible({ timeout: 5000 });
         await this.nameFilterApplyBtn.click();  
         await expect(this.noResultsFoundMsg).toBeVisible({ timeout: 10000 });
+    }
+
+    async clickToCloseIpfsFilterPopup() {  
+        await expect(this.ipfsCloseBtn).toBeVisible({ timeout: 5000 });
+        await this.ipfsCloseBtn.click();
+        await this.page.waitForTimeout(500);
+        await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
+    }
+
+    async clickToCloseStatusFilterPopup() {  
+        await expect(this.statusCloseBtn).toBeVisible({ timeout: 5000 });
+        await this.statusCloseBtn.click();
+        await this.page.waitForTimeout(500);
+        await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
+    }
+
+    async clickToClosePortalStatusFilterPopup() {
+        // Use Escape key to close the dropdown instead of clicking the close button
+        // (the close button is blocked by the dropdown container's pointer events)
+        await this.page.keyboard.press('Escape');
+        await this.page.waitForTimeout(500);
+        await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
     }
 
 
@@ -556,6 +599,345 @@ export class CoveragePage extends BasePage {
 
         console.log(`✓ Retrieved ${names.length} names from coverage table`);
         return names;
+    }
+
+    /**
+     * Get all visible IPFS Mapped values from the current page
+     * IPFS Mapped is in column 5 (td[5])
+     * @returns Array of IPFS Mapped values (YES/NO)
+     */
+    async getIpfsMappedValuesOnCurrentPage(): Promise<string[]> {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // IPFS Mapped is typically in column 5 (index 4, but XPath is 1-indexed so td[5])
+        const ipfsMappedLocator = this.page.locator("//tbody[@id='dataSection']/tr/td[5]");
+        const values: string[] = [];
+        const valueCount = await ipfsMappedLocator.count();
+
+        for (let i = 0; i < valueCount; i++) {
+            const value = (await ipfsMappedLocator.nth(i).innerText()).trim();
+            if (value) {
+                values.push(value);
+            }
+        }
+
+        console.log(`✓ Retrieved ${values.length} IPFS Mapped values from current page`);
+        return values;
+    }
+
+    /**
+     * Open IPFS Mapped filter dropdown
+     */
+    async openIpfsMappedFilterDropdown() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Click on IPFS Mapped column header to open dropdown
+        await this.ipfsMappedColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        
+        console.log("✓ IPFS Mapped filter dropdown opened");
+    }
+
+    /**
+     * Select IPFS Mapped filter option and apply
+     * @param option 'YES' or 'NO'
+     */
+    async selectIpfsMappedFilterAndApply(option: 'YES' | 'NO') {
+        await this.openIpfsMappedFilterDropdown();
+        
+        // Select the option
+        if (option === 'YES') {
+            await this.ipfsMappedYesOption.click();
+            console.log("✓ Selected YES option");
+        } else {
+            await this.ipfsMappedNoOption.click();
+            console.log("✓ Selected NO option");
+        }
+        
+        await this.page.waitForTimeout(500);
+        
+        // Click Apply button
+        await this.ipfsMappedApplyBtn.click();
+        console.log("✓ Clicked Apply button");
+        
+        // Wait for loader to disappear
+        await this.basePage.loaderSign.waitFor({state:'hidden', timeout: 10000}).catch(() => {});
+        await this.page.waitForTimeout(2000);
+    }
+
+    /**
+     * Verify all IPFS Mapped values across all pagination pages match the expected value
+     * @param expectedValue 'YES' or 'NO'
+     */
+    async verifyIpfsMappedValuesAcrossAllPages(expectedValue: 'YES' | 'NO') {
+        console.log(`\n--- Verifying all IPFS Mapped values are ${expectedValue} across all pages ---`);
+        
+        let pageNumber = 1;
+        let totalRecordsChecked = 0;
+        
+        while (true) {
+            console.log(`\nChecking page ${pageNumber}...`);
+            
+            // Get IPFS Mapped values on current page
+            const values = await this.getIpfsMappedValuesOnCurrentPage();
+            
+            if (values.length === 0) {
+                console.log("No records found on this page");
+                break;
+            }
+            
+            // Verify all values match expected value
+            for (let i = 0; i < values.length; i++) {
+                expect(values[i]).toBe(expectedValue);
+            }
+            
+            console.log(`✓ Page ${pageNumber}: All ${values.length} records have IPFS Mapped = ${expectedValue}`);
+            totalRecordsChecked += values.length;
+            
+            // Check if next button is disabled
+            const isNextDisabled = await this.paginationNext
+                .getAttribute('class')
+                .then(cls => cls?.includes('disabled'))
+                .catch(() => true);
+
+            if (isNextDisabled) {
+                console.log(`\n✓ Reached last page. Total records verified: ${totalRecordsChecked}`);
+                break;
+            }
+
+            // Go to next page
+            await this.paginationNext.click();
+            await this.page.waitForTimeout(2000);
+            pageNumber++;
+        }
+        
+        console.log(`\n✓ SUCCESS: All ${totalRecordsChecked} records across ${pageNumber} page(s) have IPFS Mapped = ${expectedValue}`);
+    }
+
+    /**
+     * Get all visible Status values from the current page
+     * Status is in column 8 (td[8])
+     * @returns Array of Status values (Active/Inactive)
+     */
+    async getStatusValuesOnCurrentPage(): Promise<string[]> {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Status is in column 8 (XPath is 1-indexed so td[8])
+        const statusLocator = this.page.locator("//tbody[@id='dataSection']/tr/td[8]");
+        const values: string[] = [];
+        const valueCount = await statusLocator.count();
+
+        for (let i = 0; i < valueCount; i++) {
+            const value = (await statusLocator.nth(i).innerText()).trim();
+            if (value) {
+                values.push(value);
+            }
+        }
+
+        console.log(`✓ Retrieved ${values.length} Status values from current page`);
+        return values;
+    }
+
+    /**
+     * Open Status filter dropdown
+     */
+    async openStatusFilterDropdown() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Click on Status column header to open dropdown
+        await this.statusColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        
+        console.log("✓ Status filter dropdown opened");
+    }
+
+    /**
+     * Select Status filter option and apply
+     * @param option 'Active' or 'Inactive'
+     */
+    async selectStatusFilterAndApply(option: 'Active' | 'Inactive') {
+        await this.openStatusFilterDropdown();
+        
+        // Select the option
+        if (option === 'Active') {
+            await this.statusActiveOption.click();
+            console.log("✓ Selected Active option");
+        } else {
+            await this.statusInactiveOption.click();
+            console.log("✓ Selected Inactive option");
+        }
+        
+        await this.page.waitForTimeout(500);
+        
+        // Click Apply button
+        await this.statusApplyBtn.click();
+        console.log("✓ Clicked Apply button");
+        
+        // Wait for loader to disappear
+        await this.basePage.loaderSign.waitFor({state:'hidden', timeout: 10000}).catch(() => {});
+        await this.page.waitForTimeout(2000);
+    }
+
+    /**
+     * Verify all Status values across all pagination pages match the expected value
+     * @param expectedValue 'Active' or 'Inactive'
+     */
+    async verifyStatusValuesAcrossAllPages(expectedValue: 'Active' | 'Inactive') {
+        console.log(`\n--- Verifying all Status values are ${expectedValue} across all pages ---`);
+        
+        let pageNumber = 1;
+        let totalRecordsChecked = 0;
+        
+        while (true) {
+            console.log(`\nChecking page ${pageNumber}...`);
+            
+            // Get Status values on current page
+            const values = await this.getStatusValuesOnCurrentPage();
+            
+            if (values.length === 0) {
+                console.log("No records found on this page");
+                break;
+            }
+            
+            // Verify all values match expected value
+            for (let i = 0; i < values.length; i++) {
+                expect(values[i]).toBe(expectedValue);
+            }
+            
+            console.log(`✓ Page ${pageNumber}: All ${values.length} records have Status = ${expectedValue}`);
+            totalRecordsChecked += values.length;
+            
+            // Check if next button is disabled
+            const isNextDisabled = await this.paginationNext
+                .getAttribute('class')
+                .then(cls => cls?.includes('disabled'))
+                .catch(() => true);
+
+            if (isNextDisabled) {
+                console.log(`\n✓ Reached last page. Total records verified: ${totalRecordsChecked}`);
+                break;
+            }
+
+            // Go to next page
+            await this.paginationNext.click();
+            await this.page.waitForTimeout(2000);
+            pageNumber++;
+        }
+        
+        console.log(`\n✓ SUCCESS: All ${totalRecordsChecked} records across ${pageNumber} page(s) have Status = ${expectedValue}`);
+    }
+
+    /**
+     * Get all visible Portal Status values from the current page
+     * Portal Status is in column 9 (td[9])
+     * @returns Array of Portal Status values (Active/Inactive)
+     */
+    async getPortalStatusValuesOnCurrentPage(): Promise<string[]> {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Portal Status is in column 9 (XPath is 1-indexed so td[9])
+        const portalStatusLocator = this.page.locator("//tbody[@id='dataSection']/tr/td[9]");
+        const values: string[] = [];
+        const valueCount = await portalStatusLocator.count();
+
+        for (let i = 0; i < valueCount; i++) {
+            const value = (await portalStatusLocator.nth(i).innerText()).trim();
+            if (value) {
+                values.push(value);
+            }
+        }
+
+        console.log(`✓ Retrieved ${values.length} Portal Status values from current page`);
+        return values;
+    }
+
+    /**
+     * Open Portal Status filter dropdown
+     */
+    async openPortalStatusFilterDropdown() {
+        await expect(this.coverageTable).toBeVisible({ timeout: 15000 });
+        
+        // Click on Portal Status column header to open dropdown
+        await this.portalStatusColumnHeader.click();
+        await this.page.waitForTimeout(1000);
+        
+        console.log("✓ Portal Status filter dropdown opened");
+    }
+
+    /**
+     * Select Portal Status filter option and apply
+     * @param option 'Active' or 'Inactive'
+     */
+    async selectPortalStatusFilterAndApply(option: 'Active' | 'Inactive') {
+        await this.openPortalStatusFilterDropdown();
+        
+        // Select the option
+        if (option === 'Active') {
+            await this.portalStatusActiveOption.click();
+            console.log("✓ Selected Active option");
+        } else {
+            await this.portalStatusInactiveOption.click();
+            console.log("✓ Selected Inactive option");
+        }
+        
+        await this.page.waitForTimeout(500);
+        
+        // Click Apply button
+        await this.portalStatusApplyBtn.click();
+        console.log("✓ Clicked Apply button");
+        
+        // Wait for loader to disappear
+        await this.basePage.loaderSign.waitFor({state:'hidden', timeout: 10000}).catch(() => {});
+        await this.page.waitForTimeout(2000);
+    }
+
+    /**
+     * Verify all Portal Status values across all pagination pages match the expected value
+     * @param expectedValue 'Active' or 'Inactive'
+     */
+    async verifyPortalStatusValuesAcrossAllPages(expectedValue: 'Active' | 'Inactive') {
+        console.log(`\n--- Verifying all Portal Status values are ${expectedValue} across all pages ---`);
+        
+        let pageNumber = 1;
+        let totalRecordsChecked = 0;
+        
+        while (true) {
+            console.log(`\nChecking page ${pageNumber}...`);
+            
+            // Get Portal Status values on current page
+            const values = await this.getPortalStatusValuesOnCurrentPage();
+            
+            if (values.length === 0) {
+                console.log("No records found on this page");
+                break;
+            }
+            
+            // Verify all values match expected value
+            for (let i = 0; i < values.length; i++) {
+                expect(values[i]).toBe(expectedValue);
+            }
+            
+            console.log(`✓ Page ${pageNumber}: All ${values.length} records have Portal Status = ${expectedValue}`);
+            totalRecordsChecked += values.length;
+            
+            // Check if next button is disabled
+            const isNextDisabled = await this.paginationNext
+                .getAttribute('class')
+                .then(cls => cls?.includes('disabled'))
+                .catch(() => true);
+
+            if (isNextDisabled) {
+                console.log(`\n✓ Reached last page. Total records verified: ${totalRecordsChecked}`);
+                break;
+            }
+
+            // Go to next page
+            await this.paginationNext.click();
+            await this.page.waitForTimeout(2000);
+            pageNumber++;
+        }
+        
+        console.log(`\n✓ SUCCESS: All ${totalRecordsChecked} records across ${pageNumber} page(s) have Portal Status = ${expectedValue}`);
     }
 
     /**
