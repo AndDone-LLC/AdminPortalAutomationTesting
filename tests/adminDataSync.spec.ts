@@ -13,148 +13,148 @@ test.beforeAll(async () => {
 });
 
 // Get Program Data from UI
-// test('UI Flow - Extract Program Data', async ({ page }) => {
+test('UI Flow - Extract Program Data', async ({ page }) => {
 
-//   test.setTimeout(120000);
-//   const adminPage = new AdminPage(page);
-//   await page.goto('https://admin.qat.anddone.com/#/login', {
-//     waitUntil: 'domcontentloaded',
-//   });
-//   await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
-//   const adminHomePage = new AdminHomePage(page);
-//   await adminHomePage.searchByDBAAndValidate('tejasmerchant2');
-//   await adminHomePage.openActionDropdownAndValidate();
-//   await adminHomePage.clickEditSubMerchantDetails();
-//   const editMerchantPage = new AdminEditMerchantPage(page);
-//   await editMerchantPage.goToDataSynchronization();
-//   await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  test.setTimeout(120000);
+  const adminPage = new AdminPage(page);
+  await page.goto('https://admin.qat.anddone.com/#/login', {
+    waitUntil: 'domcontentloaded',
+  });
+  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  const adminHomePage = new AdminHomePage(page);
+  await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+  await adminHomePage.openActionDropdownAndValidate();
+  await adminHomePage.clickEditSubMerchantDetails();
+  const editMerchantPage = new AdminEditMerchantPage(page);
+  await editMerchantPage.goToDataSynchronization();
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
 
-//   const programData = await editMerchantPage.getAllProgramData();
-//   console.log("UI Program Data:");
-//   console.log(JSON.stringify(programData, null, 2));
-//   expect(programData).toBeDefined();
-// });
+  const programData = await editMerchantPage.getAllProgramData();
+  console.log("UI Program Data:");
+  console.log(JSON.stringify(programData, null, 2));
+  expect(programData).toBeDefined();
+});
 
 // Get Coverage Data from UI
-// test('UI Flow - Extract Coverage Data', async ({ page }) => {
+test('UI Flow - Extract Coverage Data', async ({ page }) => {
 
-//     test.setTimeout(120000);
-//     const adminPage = new AdminPage(page);
-//     await page.goto('https://admin.qat.anddone.com/#/login', {
-//         waitUntil: 'domcontentloaded',
-//     });
-//     await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
-//     const adminHomePage = new AdminHomePage(page);
-//     await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
-//     await adminHomePage.openActionDropdownAndValidate();
-//     await adminHomePage.clickEditSubMerchantDetails();
-//     const editMerchantPage = new AdminEditMerchantPage(page);
-//     await editMerchantPage.goToDataSynchronization();
-//     await editMerchantPage.handleNoResultsAndSyncIfNeeded();
-//     const coverageData = await editMerchantPage.getAllCoverageData();
+    test.setTimeout(120000);
+    const adminPage = new AdminPage(page);
+    await page.goto('https://admin.qat.anddone.com/#/login', {
+        waitUntil: 'domcontentloaded',
+    });
+    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    const adminHomePage = new AdminHomePage(page);
+    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.openActionDropdownAndValidate();
+    await adminHomePage.clickEditSubMerchantDetails();
+    const editMerchantPage = new AdminEditMerchantPage(page);
+    await editMerchantPage.goToDataSynchronization();
+    await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+    const coverageData = await editMerchantPage.getAllCoverageData();
 
-//     console.log("UI Coverage Data:");
-//     console.log(JSON.stringify(coverageData, null, 2));
-//     expect(coverageData).toBeDefined()
-// });
+    console.log("UI Coverage Data:");
+    console.log(JSON.stringify(coverageData, null, 2));
+    expect(coverageData).toBeDefined()
+});
 
 // Get Program Data from API
-// test('API Flow - Get Programs', async ({ request }) => {
+test('API Flow - Get Programs', async ({ request }) => {
 
-//     ApiUtils.setRequest(request);
-//     const userName = "tejasmerchant3";
-//     const password = "Tejasmerchant@11";
-//     const loginPay = LoginPayload.getPayload({ userName, password });
-//     await ApiUtils.setResponse(
-//         await LoginRequest.login(loginPay, {
-//             origin: VariableFactory.getMerchantPortalUrl()
-//         })
-//     );
-//     VariableFactory.setLoginToken(await LoginResponse.getToken());
-//     const merchantId = await LoginResponse.getResponseValue('merchantId');
-//     const programsResponse = await GetProgramsRequest.getPrograms(merchantId);
-//     expect(programsResponse.status()).toBe(200);
-//     const json = await programsResponse.json();
+    ApiUtils.setRequest(request);
+    const userName = "tejasmerchant3";
+    const password = "Tejasmerchant@11";
+    const loginPay = LoginPayload.getPayload({ userName, password });
+    await ApiUtils.setResponse(
+        await LoginRequest.login(loginPay, {
+            origin: VariableFactory.getMerchantPortalUrl()
+        })
+    );
+    VariableFactory.setLoginToken(await LoginResponse.getToken());
+    const merchantId = await LoginResponse.getResponseValue('merchantId');
+    const programsResponse = await GetProgramsRequest.getPrograms(merchantId);
+    expect(programsResponse.status()).toBe(200);
+    const json = await programsResponse.json();
 
-//     console.log("API Programs Response:");
-//     console.log(JSON.stringify(json, null, 2));
-//     expect(json.value.records.length).toBeGreaterThan(0);
-// });
+    console.log("API Programs Response:");
+    console.log(JSON.stringify(json, null, 2));
+    expect(json.value.records.length).toBeGreaterThan(0);
+});
 
 // Get Coverage Data from API
-// test('API Flow - Get Coverage', async ({ request }) => {
-//   ApiUtils.setRequest(request);
+test('API Flow - Get Coverage', async ({ request }) => {
+  ApiUtils.setRequest(request);
 
-//   const loginPay = LoginPayload.getPayload({
-//     userName: "tejasmerchant3",
-//     password: "Tejasmerchant@11"
-//   });
+  const loginPay = LoginPayload.getPayload({
+    userName: "tejasmerchant3",
+    password: "Tejasmerchant@11"
+  });
 
-//   await ApiUtils.setResponse(
-//     await LoginRequest.login(loginPay, {
-//       origin: VariableFactory.getMerchantPortalUrl()
-//     })
-//   );
+  await ApiUtils.setResponse(
+    await LoginRequest.login(loginPay, {
+      origin: VariableFactory.getMerchantPortalUrl()
+    })
+  );
 
-//   VariableFactory.setLoginToken(await LoginResponse.getToken());
-//   const merchantId = await LoginResponse.getResponseValue('merchantId');
-//   const coverageResponse = await GetCoverageRequest.getCoverage(merchantId);
-//   expect(coverageResponse.status()).toBe(200);
-//   const json = await coverageResponse.json();
-//   console.log("API Coverage Response:");
-//   console.log(JSON.stringify(json, null, 2));
-//   expect(json.value.records.length).toBeGreaterThan(0);
-// });
+  VariableFactory.setLoginToken(await LoginResponse.getToken());
+  const merchantId = await LoginResponse.getResponseValue('merchantId');
+  const coverageResponse = await GetCoverageRequest.getCoverage(merchantId);
+  expect(coverageResponse.status()).toBe(200);
+  const json = await coverageResponse.json();
+  console.log("API Coverage Response:");
+  console.log(JSON.stringify(json, null, 2));
+  expect(json.value.records.length).toBeGreaterThan(0);
+});
 
 // Validate program Data of UI and API
-// test('Validate Program Data - UI vs API', async ({ page, request }) => {
+test('Validate Program Data - UI vs API', async ({ page, request }) => {
 
-//   test.setTimeout(180000);
-//   // ---------- UI FLOW ----------
-//   const adminPage = new AdminPage(page);
-//   await page.goto('https://admin.qat.anddone.com/#/login', {
-//     waitUntil: 'domcontentloaded',
-//   });
+  test.setTimeout(180000);
+  // ---------- UI FLOW ----------
+  const adminPage = new AdminPage(page);
+  await page.goto('https://admin.qat.anddone.com/#/login', {
+    waitUntil: 'domcontentloaded',
+  });
 
-//   await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
-//   const adminHomePage = new AdminHomePage(page);
-//   await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
-//   await adminHomePage.openActionDropdownAndValidate();
-//   await adminHomePage.clickEditSubMerchantDetails();
-//   const editMerchantPage = new AdminEditMerchantPage(page);
-//   await editMerchantPage.goToDataSynchronization();
-//   await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  const adminHomePage = new AdminHomePage(page);
+  await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+  await adminHomePage.openActionDropdownAndValidate();
+  await adminHomePage.clickEditSubMerchantDetails();
+  const editMerchantPage = new AdminEditMerchantPage(page);
+  await editMerchantPage.goToDataSynchronization();
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
 
-//   const uiProgramData = await editMerchantPage.getAllProgramData();
-//   // ---------- API FLOW ----------
+  const uiProgramData = await editMerchantPage.getAllProgramData();
+  // ---------- API FLOW ----------
 
-//   ApiUtils.setRequest(request);
-//   const loginPay = LoginPayload.getPayload({
-//     userName: "tejasmerchant3",
-//     password: "Tejasmerchant@11"
-//   });
+  ApiUtils.setRequest(request);
+  const loginPay = LoginPayload.getPayload({
+    userName: "tejasmerchant3",
+    password: "Tejasmerchant@11"
+  });
 
-//   await ApiUtils.setResponse(
-//     await LoginRequest.login(loginPay, {
-//       origin: VariableFactory.getMerchantPortalUrl()
-//     })
-//   );
+  await ApiUtils.setResponse(
+    await LoginRequest.login(loginPay, {
+      origin: VariableFactory.getMerchantPortalUrl()
+    })
+  );
 
-//   VariableFactory.setLoginToken(await LoginResponse.getToken());
-//   const merchantId = await LoginResponse.getResponseValue('merchantId');
-//   const programResponse = await GetProgramsRequest.getPrograms(merchantId);
-//   expect(programResponse.status()).toBe(200);
-//   const apiProgramData = await programResponse.json();
+  VariableFactory.setLoginToken(await LoginResponse.getToken());
+  const merchantId = await LoginResponse.getResponseValue('merchantId');
+  const programResponse = await GetProgramsRequest.getPrograms(merchantId);
+  expect(programResponse.status()).toBe(200);
+  const apiProgramData = await programResponse.json();
 
-//   // ---------- VALIDATION ----------
-//   const mismatches = CoverageValidator.comparePrograms(
-//     apiProgramData,
-//     uiProgramData
-//   );
+  // ---------- VALIDATION ----------
+  const mismatches = CoverageValidator.comparePrograms(
+    apiProgramData,
+    uiProgramData
+  );
 
-//   console.log("Program Validation Result:", mismatches);
-//   expect(mismatches.length).toBe(0);
-// });
+  console.log("Program Validation Result:", mismatches);
+  expect(mismatches.length).toBe(0);
+});
 
 // Validate coverage Data of UI and API
 test('Validate Coverage Data - UI vs API', async ({ page, request }) => {
