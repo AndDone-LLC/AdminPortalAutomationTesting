@@ -52,7 +52,7 @@ export class AdminEditMerchantPage extends BasePage {
 
     
     //toast message
-    accessAndPermissionDisableToastMsg= this.page.locator('.toast-message').filter({ hasText: '  Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable' });
+    accessAndPermissionDisableToastMsg= this.page.locator('.toast-message').filter({ hasText: 'Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable' });
 
 
     
