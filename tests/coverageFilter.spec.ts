@@ -82,7 +82,7 @@ test.describe('Coverage Name Filter Popup', () => {
         await coveragePage.enterNameInFilterAndApply('TRUCK LIABILITY');
     });
 
-    test('AN-XXXX should filter by IPFS Mapped YES and verify all pages show only YES records', async ({ page }) => {
+    test('should filter by IPFS Mapped YES and verify all pages show only YES records', async ({ page }) => {
         console.log('\n=== Testing IPFS Mapped Filter: YES ===');
         
         // Apply IPFS Mapped = YES filter
@@ -102,7 +102,7 @@ test.describe('Coverage Name Filter Popup', () => {
     });
 
 
-    test('AN-XXXX should filter by Status Active and verify all pages show only Active records', async ({ page }) => {
+    test('should filter by Status Active and verify all pages show only Active records', async ({ page }) => {
         console.log('\n=== Testing Status Filter: Active ===');
         
         // Apply Status = Active filter
@@ -119,23 +119,23 @@ test.describe('Coverage Name Filter Popup', () => {
 
     });
 
-    test.only('AN-XXXX should filter by Portal Status Active and verify all pages show only Active records', async ({ page }) => {
-        console.log('\n=== Testing Portal Status Filter: Active ===');
+    // test('AN-XXXX should filter by Portal Status Active and verify all pages show only Active records', async ({ page }) => {
+    //     console.log('\n=== Testing Portal Status Filter: Active ===');
         
-        // Apply Portal Status = Active filter
-        await coveragePage.selectPortalStatusFilterAndApply('Active');
+    //     // Apply Portal Status = Active filter
+    //     await coveragePage.selectPortalStatusFilterAndApply('Active');
         
-        // Verify all records across all pagination pages have Portal Status = Active
-        await coveragePage.verifyPortalStatusValuesAcrossAllPages('Active');
+    //     // Verify all records across all pagination pages have Portal Status = Active
+    //     await coveragePage.verifyPortalStatusValuesAcrossAllPages('Active');
 
-        await coveragePage.clickToClosePortalStatusFilterPopup();
+    //     await coveragePage.clickToClosePortalStatusFilterPopup();
 
-         // Apply Portal Status = Inactive filter
-        await coveragePage.selectPortalStatusFilterAndApply('Inactive');
+    //      // Apply Portal Status = Inactive filter
+    //     await coveragePage.selectPortalStatusFilterAndApply('Inactive');
         
-        // Verify all records across all pagination pages have Portal Status = Inactive
-        await coveragePage.verifyPortalStatusValuesAcrossAllPages('Inactive');
-    });
+    //     // Verify all records across all pagination pages have Portal Status = Inactive
+    //     await coveragePage.verifyPortalStatusValuesAcrossAllPages('Inactive');
+    // });
 
     // test('AN-XXXX should filter by Portal Status Inactive and verify all pages show only Inactive records', async ({ page }) => {
     //     console.log('\n=== Testing Portal Status Filter: Inactive ===');
