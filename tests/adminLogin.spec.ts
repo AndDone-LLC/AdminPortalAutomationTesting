@@ -73,7 +73,7 @@ test(' Data Sync : Coverage : Table Filter Check',async ({ page }) => {
       
 });
 
-test.only('Data sync :Verify validation message for access and permission setting disable ',async({page})=>
+test('Data sync :Verify validation message for access and permission setting disable ',async({page})=>
 {
      test.setTimeout(120000);
   const adminPage = new AdminPage(page);
