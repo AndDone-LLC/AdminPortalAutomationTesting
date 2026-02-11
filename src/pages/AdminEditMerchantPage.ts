@@ -62,7 +62,7 @@ export class AdminEditMerchantPage extends BasePage {
     async verifyAccessAndPermissionDisableToastMsgDisplay() {
         await expect(this.accessAndPermissionDisableToastMsg).toBeVisible({ timeout: 10000 });
         const toastText = await this.accessAndPermissionDisableToastMsg.textContent();
-        expect(['  Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable', 'Quoting feature not enabled on   Merchant account']).toContain(toastText?.trim());
+        expect(['Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable', 'Quoting feature not enabled on   Merchant account']).toContain(toastText?.trim());
     }
 
     /**
