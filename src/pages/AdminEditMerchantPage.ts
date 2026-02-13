@@ -49,7 +49,9 @@ export class AdminEditMerchantPage extends BasePage {
     syncErrorMsg = this.page.locator('.alert-danger, .error-message');
 
     programTabButton = this.page.locator('.segmented-button a').first();
-    coverageTabButton = this.page.locator('.segmented-button a').nth(1);
+    coverageTabButton = this.page.locator('.segmented-button a').nth(2);
+    GATabButton = this.page.locator('.segmented-button a').last();
+
 
     
     //toast message
