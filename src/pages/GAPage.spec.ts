@@ -14,11 +14,13 @@ export class GAPage extends BasePage {
 
     public utils: CommonUtils;
     public basePage: BasePage;
+    public adminEditMerchantPage: AdminEditMerchantPage;
 
     constructor(page: Page) {
         super(page);
         this.utils = new CommonUtils();
         this.basePage = new BasePage(page);
+        this.adminEditMerchantPage = new AdminEditMerchantPage(page);
     }
     
     //Table locator for No results found
@@ -53,7 +55,7 @@ export class GAPage extends BasePage {
    nameFilterApplyButton=this.page.locator("//div[@aria-labelledby='nameDropdownBtnGa']//following-sibling::div/a[contains(@class,'apply')]");
    nameFilterClearButton=this.page.locator("//div[@aria-labelledby='nameDropdownBtnGa']//following-sibling::div/a[contains(@class,'clear')]");
    firstNameFromTable=this.page.locator("//tbody[@id='dataSection']/tr/td[1]");
-   nameSortingIcon=this.page.locator("//button[@id='nameDropdownBtnGa']//following-sibling::span[@class='sort-icon']");
+   nameSortingIcon=this.page.locator("//button[@id='nameDropdownBtnGa']//following-sibling::span[contains(@class,'sort-icon')]");
 
    //AD ID
    ADIDHeader=this.page.locator("//div[@id='adIdDropdownGa']//span[@class='date']");
@@ -660,6 +662,101 @@ export class GAPage extends BasePage {
         }
         return true;
     }
+
+    async getAllGAData(): Promise<any> {
+
+        await expect(this.adminEditMerchantPage.GATabButton).toBeVisible({ timeout: 15000 });
+        //await this.coverageTabButton.click();
+
+        await this.page.waitForTimeout(3000);
+
+        const table = this.page.locator('app-data-synchronization table');
+
+        if (await table.count() === 0) {
+            console.log("GA table not found");
+            return {
+                value: {
+                    records: [],
+                    recordCount: 0
+                }
+            };
+        }
+
+        await expect(table).toBeVisible({ timeout: 15000 });
+
+        const records: any[] = [];
+        let pageIndex = 1;
+
+        while (true) {
+
+            console.log(`Reading GA page: ${pageIndex}`);
+
+            const headers = await table.locator('thead th').allInnerTexts();
+            const rows = table.locator('tbody tr');
+            const rowCount = await rows.count();
+
+            for (let i = 0; i < rowCount; i++) {
+
+                const cells = rows.nth(i).locator('td');
+                const cellCount = await cells.count();
+
+                const rowObj: any = {};
+
+                for (let j = 0; j < cellCount; j++) {
+                    const header = headers[j] || `Column${j}`;
+                    rowObj[header] = (await cells.nth(j).innerText()).trim();
+                }
+
+                const formattedRecord = {
+                    name: rowObj["Name"] || "",
+                    adUniqueId: rowObj["AD ID"] || "",
+                    customerID: rowObj["Customer ID"] || "",
+                    ipfsName: rowObj["IPFS Name"] || "",
+                    isMapped: rowObj["IPFS Mapped"] === "YES",
+                    quoteEligible:rowObj["Quote Eligible"] === "YES",
+                    autobookEligible: rowObj["Autobook Eligible"] === "YES",
+                    updatedOn: rowObj["Updated On"] || "",
+                    createdOn: rowObj["Created On"] || "",
+                    status: rowObj["Status"] || "",
+                    portalStatus: rowObj["Portal Status"] || "",
+                    isLocked: rowObj["Locked"] === "YES"
+                };
+
+                records.push(formattedRecord);
+            }
+
+            // Check if next button is disabled
+            const isNextDisabled = await this.paginationNextBtn
+                .getAttribute('class')
+                .then(cls => cls?.includes('disabled'));
+
+            if (isNextDisabled) {
+                console.log("Reached last page of carrier");
+                break;
+            }
+
+            await this.paginationNextBtn.click();
+            await this.page.waitForTimeout(2000);
+
+            pageIndex++;
+        }
+
+        return {
+            value: {
+                records: records,
+                currentPage: 1,
+                totalPages: 1,
+                pageSize: records.length,
+                recordCount: records.length,
+                hasPrevious: false,
+                hasNext: false
+            },
+            isSuccess: true,
+            isFailure: false,
+            error: null
+        };
+    }
+
    
 }
 

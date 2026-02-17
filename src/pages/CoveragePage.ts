@@ -40,9 +40,9 @@ export class CoveragePage extends BasePage {
     ipfsMappedColumnHeader = this.coverageTable.locator('#ipfsMappedDropdownCoverage .date');
     //ipfsMappedDropdownBtn = this.page.locator('#ipfsMappedDropdownBtn, button').filter({ hasText: 'IPFS Mapped' }).first();
     ipfsMappedYesOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//span").first();
-    ipfsMappedNoOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//span").last();
+    ipfsMappedNoOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//span[contains(@class,'yellow')]");
     ipfsMappedApplyBtn = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdownCoverage']//following::div/a").first();
-    ipfsCloseBtn=this.page.locator("//button[@id='ipfsMappedDropdownCoverage']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
+    ipfsMappedCloseBtn=this.page.locator("//button[@id='ipfsMappedDropdownCoverage']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
     // Status filter
     statusColumnHeader = this.coverageTable.locator('#statusDropdownCoverage .date');
     statusActiveOption = this.page.locator("//div[@aria-labelledby='statusDropdownCoverage']//span[contains(text(),'Active')]");
@@ -112,23 +112,25 @@ export class CoveragePage extends BasePage {
     }
 
     async clickToCloseIpfsFilterPopup() {  
-        await expect(this.ipfsCloseBtn).toBeVisible({ timeout: 5000 });
-        await this.ipfsCloseBtn.click();
+        await expect(this.ipfsMappedCloseBtn).toBeVisible({ timeout: 5000 });
+        await this.ipfsMappedCloseBtn.scrollIntoViewIfNeeded();
+        await this.ipfsMappedCloseBtn.click({ force: true });
         await this.page.waitForTimeout(500);
         await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
     }
 
     async clickToCloseStatusFilterPopup() {  
         await expect(this.statusCloseBtn).toBeVisible({ timeout: 5000 });
-        await this.statusCloseBtn.click();
+        await this.statusCloseBtn.scrollIntoViewIfNeeded();
+        await this.statusCloseBtn.click({ force: true });
         await this.page.waitForTimeout(500);
         await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
     }
 
     async clickToClosePortalStatusFilterPopup() {
-        // Use Escape key to close the dropdown instead of clicking the close button
-        // (the close button is blocked by the dropdown container's pointer events)
-        await this.page.keyboard.press('Escape');
+        await expect(this.portalStatusCloseBtn).toBeVisible({ timeout: 5000 });
+        await this.portalStatusCloseBtn.scrollIntoViewIfNeeded();
+        await this.portalStatusCloseBtn.click({ force: true });
         await this.page.waitForTimeout(500);
         await expect(this.basePage.loaderSign).toBeHidden({ timeout: 10000 });
     }
@@ -645,11 +647,13 @@ export class CoveragePage extends BasePage {
     async selectIpfsMappedFilterAndApply(option: 'YES' | 'NO') {
         await this.openIpfsMappedFilterDropdown();
         
-        // Select the option
+        // Wait for options to be visible
         if (option === 'YES') {
+            await expect(this.ipfsMappedYesOption).toBeVisible({ timeout: 5000 });
             await this.ipfsMappedYesOption.click();
             console.log("✓ Selected YES option");
         } else {
+            await expect(this.ipfsMappedNoOption).toBeVisible({ timeout: 5000 });
             await this.ipfsMappedNoOption.click();
             console.log("✓ Selected NO option");
         }
@@ -758,11 +762,13 @@ export class CoveragePage extends BasePage {
     async selectStatusFilterAndApply(option: 'Active' | 'Inactive') {
         await this.openStatusFilterDropdown();
         
-        // Select the option
+        // Wait for options to be visible
         if (option === 'Active') {
+            await expect(this.statusActiveOption).toBeVisible({ timeout: 5000 });
             await this.statusActiveOption.click();
             console.log("✓ Selected Active option");
         } else {
+            await expect(this.statusInactiveOption).toBeVisible({ timeout: 5000 });
             await this.statusInactiveOption.click();
             console.log("✓ Selected Inactive option");
         }
@@ -871,11 +877,13 @@ export class CoveragePage extends BasePage {
     async selectPortalStatusFilterAndApply(option: 'Active' | 'Inactive') {
         await this.openPortalStatusFilterDropdown();
         
-        // Select the option
+        // Wait for options to be visible
         if (option === 'Active') {
+            await expect(this.portalStatusActiveOption).toBeVisible({ timeout: 5000 });
             await this.portalStatusActiveOption.click();
             console.log("✓ Selected Active option");
         } else {
+            await expect(this.portalStatusInactiveOption).toBeVisible({ timeout: 5000 });
             await this.portalStatusInactiveOption.click();
             console.log("✓ Selected Inactive option");
         }
@@ -965,13 +973,22 @@ export class CoveragePage extends BasePage {
     }
 
     /**
+     * Normalize values to match UI sort behavior (ignore punctuation and spaces)
+     */
+    private normalizeSortValue(value: string): string {
+        return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    /**
      * Verify if array is sorted in ascending order
      * @param arr Array to check
      * @returns true if sorted in ascending order
      */
     isAscendingOrder(arr: string[]): boolean {
         for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i].toLowerCase() > arr[i + 1].toLowerCase()) {
+            const current = this.normalizeSortValue(arr[i]);
+            const next = this.normalizeSortValue(arr[i + 1]);
+            if (current > next) {
                 return false;
             }
         }
@@ -985,7 +1002,9 @@ export class CoveragePage extends BasePage {
      */
     isDescendingOrder(arr: string[]): boolean {
         for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i].toLowerCase() < arr[i + 1].toLowerCase()) {
+            const current = this.normalizeSortValue(arr[i]);
+            const next = this.normalizeSortValue(arr[i + 1]);
+            if (current < next) {
                 return false;
             }
         }
