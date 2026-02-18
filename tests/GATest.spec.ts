@@ -62,7 +62,7 @@ test.describe('GA Test',()=>{
     });
 
 
-    test('should open Name filter popup when clicking on Name column dropdown', async()=>{
+    test('AN -27307:should open Name filter popup when clicking on Name column dropdown', async()=>{
         
         // Name Filter: Enter input in Name filter and validate results
         await GApage.enterInputInNameFilterAndValidateResults();
@@ -86,19 +86,19 @@ test.describe('GA Test',()=>{
 
     });
 
-    test('should validate status filter options and results in GA tab', async()=>{
+    test('AN-27304:should validate status filter options and results in GA tab', async()=>{
         //Status Filter: Validate Status filter options and results
         await GApage.validateStatusFilterOptionsAndResults("Active");
         await GApage.validateStatusFilterOptionsAndResults("Inactive");
     });
 
-    test('should validate portal status filter options and results in GA tab', async()=>{
+    test('AN-27304:should validate portal status filter options and results in GA tab', async()=>{
        //Portal Status Filter: Validate Portal Status filter options and results
        await GApage.validatePortalStatusFilterOptionsAndResults("Active");
        await GApage.validatePortalStatusFilterOptionsAndResults("Inactive");
     });
 
-    test('should verify pagination functionality in GA tab', async () => {
+    test('AN -27303:should verify pagination functionality in GA tab', async () => {
         console.log('\n=== TESTING GA TAB PAGINATION FUNCTIONALITY ===');
         
         // Get pagination info
@@ -199,7 +199,7 @@ test.describe('GA Test',()=>{
         }
     });
 
-    test('should verify items per page functionality in GA tab', async ({ page }) => {
+    test('AN - 27308, AN-27309:should verify items per page functionality in GA tab', async ({ page }) => {
         console.log('\n=== TESTING ITEMS PER PAGE FUNCTIONALITY ===');
         
         // Get initial pagination info
@@ -261,7 +261,7 @@ test.describe('GA Test',()=>{
         console.log('\n=== ITEMS PER PAGE TESTS PASSED ===');
     });
 
-    test.only('should verify Name column sorting with ascending/descending toggle', async ({ page }) => {
+    test('AN -27306:should verify Name column sorting with ascending/descending toggle', async ({ page }) => {
         console.log('\n=== TESTING NAME COLUMN SORTING ===');
         
         // Get initial state before any sorting (check all pages)
@@ -416,12 +416,12 @@ test.describe('GA Test : For access setting and permission setting OFF',()=>{
         console.log(" Switched to GA Tab");
     });
 
-    test('Verify GA tab loads with table headers', async()=>{
+    test('AN-27298:Verify GA tab loads with table headers', async()=>{
         await expect(GApage.verifyCarrierTabLoadswithTableHeaders()).toBeTruthy();
         console.log(" GA tab loaded with table headers");
     });
 
-     test('Verify No results found message is displayed when there is no data in GA tab', async()=>{
+     test('AN-27299:Verify No results found message is displayed when there is no data in GA tab', async()=>{
         await expect(GApage.noResultsFoundMsg).toBeVisible({ timeout: 15000 });
         console.log(" No results found message is displayed when there is no data in GA tab");
     });

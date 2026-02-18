@@ -9,7 +9,14 @@ export class GetCarrierRequest extends BaseAPI {
             authorization: VariableFactory.getLoginToken() 
         };
 
-        const apiurl=BaseAPI.getBaseUrl2() + '/pf/merchants/' + merchantId + '/carrier' + `?pageIndex=1` + '&pageSize=100` + `&sortField=Alias` + `&ascending=false' + '&Status=Active' + '&PortalStatus=Active';
+        const apiurl =
+            BaseAPI.getBaseUrl2() +
+            `/pf/merchants/${merchantId}/carrier` +
+            `?pageIndex=1` +
+            `&pageSize=100` +
+            `&sortField=name` +
+            `&ascending=false`;
+
         return BaseAPI.sendRequest(
             "GET",
             apiurl,

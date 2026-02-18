@@ -69,21 +69,21 @@ export class CarrierPage extends BasePage {
     ipfsNameFilterClearBtn = this.page.locator("//div[@aria-labelledby='ipfsNameDropdownBtn']/div[@class='filter-button-holder']/a[contains(text(),'Clear')]");
 
     // IPFS Mapped filter
-    ipfsMappedColumnHeader = this.carrierTable.locator("#ipfsMappedDropdownCarrier .date");
+    ipfsMappedColumnHeader = this.carrierTable.locator("#ipfsMappedDropdown .date");
     ipfsMappedYesOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdown']//span[contains(@class,'status settled')]");
     ipfsMappedNoOption = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdown']//span[contains(@class,'yellow')]");
     ipfsMappedApplyBtn = this.page.locator("//div[@aria-labelledby='ipfsMappedDropdown']//following::div/a").first();
     ipfsMappedCloseBtn = this.page.locator("//button[@id='ipfsMappedDropdown']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
 
     // Status filter
-    statusColumnHeader = this.carrierTable.locator("#statusDropdownCarrier .date");
+    statusColumnHeader = this.carrierTable.locator("#statusDropdown .date");
     statusActiveOption = this.page.locator("//div[@aria-labelledby='statusDropdown']//span[contains(text(),'Active')]");
     statusInactiveOption = this.page.locator("//div[@aria-labelledby='statusDropdown']//span[contains(text(),'Inactive')]");
     statusApplyBtn = this.page.locator("//div[@aria-labelledby='statusDropdown']//following::div/a").first();
     statusCloseBtn = this.page.locator("//button[@id='statusDropdown']//following::div[@class='filter-popup show']//following-sibling::span[@class='close-popup']");
 
     // Portal Status filter
-    portalStatusColumnHeader = this.carrierTable.locator("#portalStatusDropdownCarrier .date");
+    portalStatusColumnHeader = this.carrierTable.locator("#portalStatusDropdown .date");
     portalStatusActiveOption = this.page.locator("//div[@aria-labelledby='portalStatusDropdown']//span[contains(text(),'Active')]");
     portalStatusInactiveOption = this.page.locator("//div[@aria-labelledby='portalStatusDropdown']//span[contains(text(),'Inactive')]");
     portalStatusApplyBtn = this.page.locator("//div[@aria-labelledby='portalStatusDropdown']//following::div/a").first();
@@ -124,6 +124,15 @@ export class CarrierPage extends BasePage {
 
    //IPFS Name
     firstIPFSNameFromTable=this.page.locator("//tbody[@id='dataSection']/tr/td[4]");
+
+    async getAllTableHeadersText(){
+        const headersCount = await this.carrierHeaders.count();
+        const headersText = [];
+        for(let i=0; i<headersCount; i++){
+            headersText.push(await this.carrierHeaders.nth(i).innerText());
+        }
+        return headersText;
+    }
 
     async enterInputInNameFilterAndValidateResults(){
         const firstName = await this.firstNameFromTable.first().innerText();

@@ -233,4 +233,291 @@ export class CoverageValidator {
         return mismatches;
     }
 
+
+     static compareCarrierData(apiData: any, uiData: any): string[] {
+
+        const mismatches: string[] = [];
+
+        // ----- Basic Safety Checks -----
+        if (!apiData?.value?.records) {
+            return ["Invalid API response format"];
+        }
+
+        if (!uiData?.value?.records) {
+            return ["Invalid UI response format"];
+        }
+
+        const apiRecords = apiData.value.records;
+        const uiRecords = uiData.value.records;
+        if (apiRecords.length !== uiRecords.length) {
+    return [
+        `Record count mismatch: API has ${apiRecords.length} records, UI has ${uiRecords.length} records`
+    ];
+}
+
+
+        const apiMap: any = {};
+        apiRecords.forEach((rec: any) => {
+            apiMap[rec.adUniqueId] = rec;
+        });
+
+        const uiMap: any = {};
+        uiRecords.forEach((rec: any) => {
+            uiMap[rec.adUniqueId] = rec;
+        });
+
+        // ----- MAIN COMPARISON -----
+        for (const adId in uiMap) {
+
+            const uiItem = uiMap[adId];
+            const apiItem = apiMap[adId];
+
+            if (!apiItem) {
+                mismatches.push(`UI item ${adId} not found in API response`);
+                continue;
+            }
+
+            // ----- Name -----
+            if (uiItem.name !== apiItem.name) {
+                mismatches.push(`Name mismatch for ${adId}`);
+            }
+
+            // ----- Customer ID -----
+            const apiCustomerID = apiItem.customerID;
+
+            if (uiItem.customerID !== apiCustomerID) {
+                mismatches.push(`Customer ID mismatch for ${adId}`);
+            }
+
+            // ----- IPFS Name -----
+            const apiIpfsName = apiItem.ipfsName;
+
+            if (uiItem.ipfsName !== apiIpfsName) {
+                mismatches.push(`IPFS Name mismatch for ${adId}`);
+            }
+
+            // ----- IPFS Mapped -----
+            const apiIpfsMapped = apiItem.ipfsMapped ? "YES" : "NO";
+            const uiIpfsMapped = uiItem.ipfsMapped ? "YES" : "NO";
+
+            if (uiIpfsMapped !== apiIpfsMapped) {
+                mismatches.push(`IPFS Mapped mismatch for ${adId}`);
+            }
+                // ----- Quote Eligible -----
+                const apiQuoteEligible = apiItem.quoteEligible ? "YES" : "NO";
+                const uiQuoteEligible = uiItem.quoteEligible ? "YES" : "NO";
+
+                if (uiQuoteEligible !== apiQuoteEligible) {
+                    mismatches.push(`Quote Eligible mismatch for ${adId}`);
+                }
+
+            // ----- Autobook Eligible -----
+            const apiAutobookEligible = apiItem.autobookEligible ? "YES" : "NO";
+            const uiAutobookEligible = uiItem.autobookEligible ? "YES" : "NO";
+              
+            if (uiAutobookEligible !== apiAutobookEligible) {
+                mismatches.push(`Autobook Eligible mismatch for ${adId}`);
+            }
+
+            // ----- Status -----
+            if (uiItem.status !== apiItem.status) {
+                mismatches.push(`Status mismatch for ${adId}`);
+            }
+
+            // ----- Portal Status -----
+            if (uiItem.portalStatus !== apiItem.portalStatus) {
+                mismatches.push(`Portal Status mismatch for ${adId}`);
+            }
+
+            // ----- Lock Status -----
+            if (uiItem.isLocked !== apiItem.isLocked) {
+                mismatches.push(`Lock status mismatch for ${adId}`);
+            }
+
+            // ================= DATE COMPARISON USING YOUR FUNCTION =================
+
+            try {
+                // ---- Parse UI Date ----
+                const uiDateObj = new Date(uiItem.createdOn);
+
+                // ---- Parse API Date (format: MM-dd-yyyy HH:mm:ss) ----
+                const apiDateObj = parse(
+                    apiItem.createdOn,
+                    "MM-dd-yyyy HH:mm:ss",
+                    new Date()
+                );
+
+                // ---- Normalize both using YOUR function ----
+                const normalizedUiDate = GenerationUtils.normalizeToDateOnly(uiDateObj);
+                const normalizedApiDate = GenerationUtils.normalizeToDateOnly(apiDateObj);
+
+                // ---- Final Date Comparison ----
+                if (
+                    !normalizedUiDate ||
+                    !normalizedApiDate ||
+                    normalizedUiDate.getTime() !== normalizedApiDate.getTime()
+                ) {
+                    mismatches.push(`Created On date mismatch for ${adId}`);
+                }
+
+            } catch (error) {
+                mismatches.push(`Date parsing error for ${adId}`);
+            }
+        }
+
+        // ----- Check if API has extra items not present in UI -----
+        for (const adId in apiMap) {
+            if (!uiMap[adId]) {
+                mismatches.push(`API item ${adId} not found in UI response`);
+            }
+        }
+
+        return mismatches;
+    }
+
+
+    static compareGAData(apiData: any, uiData: any): string[] {
+
+        const mismatches: string[] = [];
+
+        // ----- Basic Safety Checks -----
+        if (!apiData?.value?.records) {
+            return ["Invalid API response format"];
+        }
+
+        if (!uiData?.value?.records) {
+            return ["Invalid UI response format"];
+        }
+
+        const apiRecords = apiData.value.records;
+        const uiRecords = uiData.value.records;
+        if (apiRecords.length !== uiRecords.length) {
+    return [
+        `Record count mismatch: API has ${apiRecords.length} records, UI has ${uiRecords.length} records`
+    ];
+}
+
+
+        const apiMap: any = {};
+        apiRecords.forEach((rec: any) => {
+            apiMap[rec.adUniqueId] = rec;
+        });
+
+        const uiMap: any = {};
+        uiRecords.forEach((rec: any) => {
+            uiMap[rec.adUniqueId] = rec;
+        });
+
+        // ----- MAIN COMPARISON -----
+        for (const adId in uiMap) {
+
+            const uiItem = uiMap[adId];
+            const apiItem = apiMap[adId];
+
+            if (!apiItem) {
+                mismatches.push(`UI item ${adId} not found in API response`);
+                continue;
+            }
+
+            // ----- Name -----
+            if (uiItem.name !== apiItem.name) {
+                mismatches.push(`Name mismatch for ${adId}`);
+            }
+
+            // ----- Customer ID -----
+            const apiCustomerID = apiItem.customerID;
+
+            if (uiItem.customerID !== apiCustomerID) {
+                mismatches.push(`Customer ID mismatch for ${adId}`);
+            }
+
+            // ----- IPFS Name -----
+            const apiIpfsName = apiItem.ipfsName;
+
+            if (uiItem.ipfsName !== apiIpfsName) {
+                mismatches.push(`IPFS Name mismatch for ${adId}`);
+            }
+
+            // ----- IPFS Mapped -----
+            const apiIpfsMapped = apiItem.ipfsMapped ? "YES" : "NO";
+            const uiIpfsMapped = uiItem.ipfsMapped ? "YES" : "NO";
+
+            if (uiIpfsMapped !== apiIpfsMapped) {
+                mismatches.push(`IPFS Mapped mismatch for ${adId}`);
+            }
+            // ----- Quote Eligible -----
+            const apiQuoteEligible = apiItem.quoteEligible ? "YES" : "NO";
+            const uiQuoteEligible = uiItem.quoteEligible ? "YES" : "NO";
+
+            if (uiQuoteEligible !== apiQuoteEligible) {
+                mismatches.push(`Quote Eligible mismatch for ${adId}`);
+            }
+
+            // ----- Autobook Eligible -----
+            const apiAutobookEligible = apiItem.autobookEligible ? "YES" : "NO";
+            const uiAutobookEligible = uiItem.autobookEligible ? "YES" : "NO";
+              
+            if (uiAutobookEligible !== apiAutobookEligible) {
+                mismatches.push(`Autobook Eligible mismatch for ${adId}`);
+            }
+
+            // ----- Status -----
+            if (uiItem.status !== apiItem.status) {
+                mismatches.push(`Status mismatch for ${adId}`);
+            }
+
+            // ----- Portal Status -----
+            if (uiItem.portalStatus !== apiItem.portalStatus) {
+                mismatches.push(`Portal Status mismatch for ${adId}`);
+            }
+
+            // ----- Lock Status -----
+            if (uiItem.isLocked !== apiItem.isLocked) {
+                mismatches.push(`Lock status mismatch for ${adId}`);
+            }
+
+            // ================= DATE COMPARISON USING YOUR FUNCTION =================
+
+            try {
+                // ---- Parse UI Date ----
+                const uiDateObj = new Date(uiItem.createdOn);
+
+                // ---- Parse API Date (format: MM-dd-yyyy HH:mm:ss) ----
+                const apiDateObj = parse(
+                    apiItem.createdOn,
+                    "MM-dd-yyyy HH:mm:ss",
+                    new Date()
+                );
+
+                // ---- Normalize both using YOUR function ----
+                const normalizedUiDate = GenerationUtils.normalizeToDateOnly(uiDateObj);
+                const normalizedApiDate = GenerationUtils.normalizeToDateOnly(apiDateObj);
+
+                // ---- Final Date Comparison ----
+                if (
+                    !normalizedUiDate ||
+                    !normalizedApiDate ||
+                    normalizedUiDate.getTime() !== normalizedApiDate.getTime()
+                ) {
+                    mismatches.push(`Created On date mismatch for ${adId}`);
+                }
+
+            } catch (error) {
+                mismatches.push(`Date parsing error for ${adId}`);
+            }
+        }
+
+        // ----- Check if API has extra items not present in UI -----
+        for (const adId in apiMap) {
+            if (!uiMap[adId]) {
+                mismatches.push(`API item ${adId} not found in UI response`);
+            }
+        }
+
+        return mismatches;
+    }
+
+
+    
+
 }

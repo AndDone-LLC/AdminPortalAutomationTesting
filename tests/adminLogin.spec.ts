@@ -91,4 +91,28 @@ test('Data sync :Verify validation message for access and permission setting dis
   await editMerchantPage.goToDataSynchronization();
   await editMerchantPage.handleNoResultsAndSyncIfNeeded();
   await editMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
+
+  //verify for carrier 
+  await editMerchantPage.carrierTabButton.click();
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  await editMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
+  await editMerchantPage.waitForToastMessageToDisappear();
+
+
+  //verify for coverage
+  await editMerchantPage.coverageTabButton.click();
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  await editMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
+  await editMerchantPage.waitForToastMessageToDisappear();
+
+  //verify for broker
+  await editMerchantPage.brokerTabButton.click(); 
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  await editMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
+  await editMerchantPage.waitForToastMessageToDisappear();
+  
+  //verify for GA
+  await editMerchantPage.GATabButton.click();
+  await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+  await editMerchantPage.verifyAccessAndPermissionDisableToastMsgDisplay();
 });

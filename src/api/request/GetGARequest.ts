@@ -9,7 +9,14 @@ export class GetGARequest extends BaseAPI {
             authorization: VariableFactory.getLoginToken() 
         };
 
-        const apiurl=BaseAPI.getBaseUrl2() + '/pf/merchants/' + merchantId + '/ga' + `?pageIndex=1` + '&pageSize=100` + `&sortField=name` + `&ascending=false';
+        const apiurl =
+            BaseAPI.getBaseUrl2() +
+            `/pf/merchants/${merchantId}/ga` +
+            `?pageIndex=1` +
+            `&pageSize=100` +
+            `&sortField=name` +
+            `&ascending=false`;
+
         return BaseAPI.sendRequest(
             "GET",
             apiurl,
