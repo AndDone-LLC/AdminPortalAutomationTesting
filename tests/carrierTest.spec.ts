@@ -336,8 +336,8 @@ test.describe("Carrier Access Setting and permission setting disable", () => {
         expect(headers).toContain("Customer ID");
         expect(headers).toContain("IPFS Name");
         expect(headers).toContain("IPFS Mapped");
-        expect(headers).toContain("Quote Eligibile");
-        expect(headers).toContain("Auto Eligibile");
+        expect(headers).toContain("Quote Eligible");
+        expect(headers).toContain("Auto Eligible");
         expect(headers).toContain("Updated On");
         expect(headers).toContain("Created On");
         expect(headers).toContain("Status");
