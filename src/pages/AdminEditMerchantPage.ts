@@ -51,7 +51,8 @@ export class AdminEditMerchantPage extends BasePage {
     programTabButton = this.page.locator('.segmented-button a').first();
     coverageTabButton = this.page.locator('.segmented-button a').nth(2);
     carrierTabButton = this.page.locator('.segmented-button a').filter({ hasText: 'Carrier' }).first();
-    brokerTabButton = this.page.locator('.segmented-button a').filter({ hasText: 'Broker' }).first();
+    // brokerTabButton = this.page.locator('.segmented-button a').filter({ hasText: 'Broker' }).first();
+    brokerTabButton = this.page.locator('.segmented-button a').nth(3);
     GATabButton = this.page.locator('.segmented-button a').last();
 
 

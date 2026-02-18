@@ -234,6 +234,123 @@ export class CoverageValidator {
     }
 
 
+    static compareBrokers(apiResponse: any, uiResponse: any): string[] {
+
+        const mismatches: string[] = [];
+
+        // ----- Validate Structure -----
+        if (!apiResponse?.value?.records || !uiResponse?.value?.records) {
+            return ["Invalid API or UI response structure"];
+        }
+
+        const apiRecords = apiResponse.value.records;
+        const uiRecords = uiResponse.value.records;
+
+        if (apiRecords.length !== uiRecords.length) {
+            mismatches.push(
+                `Record count mismatch: API has ${apiRecords.length}, UI has ${uiRecords.length}`
+            );
+        }
+
+        // Convert to map by adUniqueId
+        const apiMap = new Map<string, any>();
+        const uiMap = new Map<string, any>();
+
+        apiRecords.forEach((r: any) => apiMap.set(r.adUniqueId, r));
+        uiRecords.forEach((r: any) => uiMap.set(r.adUniqueId, r));
+
+        // Normalizer for safe string comparison
+        const normalize = (val: string) =>
+            val?.replace(/[^a-z0-9]/gi, "").toLowerCase();
+
+        // ----- MAIN COMPARISON -----
+        for (const [adUniqueId, uiItem] of uiMap.entries()) {
+
+            const apiItem = apiMap.get(adUniqueId);
+
+            if (!apiItem) {
+                mismatches.push(`Broker ${adUniqueId} present in UI but missing in API`);
+                continue;
+            }
+
+            // ----- Name (Column 1 → apiItem.name) -----
+            if (normalize(uiItem.name) !== normalize(apiItem.name)) {
+                mismatches.push(`Name mismatch for ${adUniqueId}`);
+            }
+
+            // ----- IPFS Broker Name (Column 4 → apiItem.pfBroker.brokerName) -----
+            if (
+                normalize(uiItem.pfBroker?.brokerName) !==
+                normalize(apiItem.pfBroker?.brokerName)
+            ) {
+                mismatches.push(`IPFS Broker Name mismatch for ${adUniqueId}`);
+            }
+
+            // ----- Customer Unique ID -----
+            if (uiItem.customerUniqueId !== apiItem.customerUniqueId) {
+                mismatches.push(`Customer ID mismatch for ${adUniqueId}`);
+            }
+
+            // ----- Mapping Status -----
+            if (
+                uiItem.pfBrokerEligibility?.isMapped !==
+                apiItem.pfBrokerEligibility?.isMapped
+            ) {
+                mismatches.push(`Mapping status mismatch for ${adUniqueId}`);
+            }
+
+            // ----- Status -----
+            if (uiItem.status !== apiItem.status) {
+                mismatches.push(`Status mismatch for ${adUniqueId}`);
+            }
+
+            // ----- Portal Status -----
+            if (uiItem.portalStatus !== apiItem.portalStatus) {
+                mismatches.push(`Portal Status mismatch for ${adUniqueId}`);
+            }
+
+            // ================= DATE COMPARISON =================
+            try {
+
+                const uiDateObj = new Date(uiItem.createdOn);
+
+                const apiDateObj = parse(
+                    apiItem.createdOn,
+                    "MM-dd-yyyy HH:mm:ss",
+                    new Date()
+                );
+
+                const normalizedUiDate =
+                    GenerationUtils.normalizeToDateOnly(uiDateObj);
+
+                const normalizedApiDate =
+                    GenerationUtils.normalizeToDateOnly(apiDateObj);
+
+                if (
+                    !normalizedUiDate ||
+                    !normalizedApiDate ||
+                    normalizedUiDate.getTime() !== normalizedApiDate.getTime()
+                ) {
+                    mismatches.push(`Created On date mismatch for ${adUniqueId}`);
+                }
+
+            } catch (error) {
+                mismatches.push(`Date parsing error for ${adUniqueId}`);
+            }
+        }
+
+        // ----- Check Extra API Records -----
+        for (const adUniqueId of apiMap.keys()) {
+            if (!uiMap.has(adUniqueId)) {
+                mismatches.push(
+                    `Broker ${adUniqueId} present in API but missing in UI`
+                );
+            }
+        }
+
+        return mismatches;
+    }
+    
      static compareCarrierData(apiData: any, uiData: any): string[] {
 
         const mismatches: string[] = [];
