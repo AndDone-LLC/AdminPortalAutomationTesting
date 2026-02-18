@@ -49,16 +49,11 @@ export class AdminEditMerchantPage extends BasePage {
     syncErrorMsg = this.page.locator('.alert-danger, .error-message');
 
     programTabButton = this.page.locator('.segmented-button a').first();
-    coverageTabButton = this.page.locator('.segmented-button a').nth(1);
-
+    coverageTabButton = this.page.locator('.segmented-button a').nth(2);
+    brokerTabButton = this.page.locator('.segmented-button a').nth(3);
     
     //toast message
     accessAndPermissionDisableToastMsg= this.page.locator('.toast-message').filter({ hasText: 'Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable' });
-
-
-    
-
-
 
     async verifyAccessAndPermissionDisableToastMsgDisplay() {
         await expect(this.accessAndPermissionDisableToastMsg).toBeVisible({ timeout: 10000 });
@@ -220,10 +215,8 @@ export class AdminEditMerchantPage extends BasePage {
 
                     singlePlan[title] = value;
                 }
-
                 plans.push(singlePlan);
             }
-
             programData["Underlying Plans"] = plans;
 
             records.push({
@@ -255,9 +248,7 @@ export class AdminEditMerchantPage extends BasePage {
     async handleNoResultsAndSyncIfNeeded() {
 
         await this.page.waitForTimeout(2000);
-
         const isNoResultsVisible = await this.noResultsMsg.isVisible().catch(() => false);
-
         if (!isNoResultsVisible) {
             console.log("Existing data found - no sync required");
             return;
@@ -274,10 +265,5 @@ export class AdminEditMerchantPage extends BasePage {
         } catch (err) {
             console.log("Error during sync attempt - continuing execution: ", err);
         }
-    }
-
-    
-
-   
-   
+    }   
 }

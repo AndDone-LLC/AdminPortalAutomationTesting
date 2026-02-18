@@ -256,6 +256,7 @@ export class CoveragePage extends BasePage {
     async getAllCoverageData(): Promise<any> {
 
         await expect(this.adminEditMerchantPage.coverageTabButton).toBeVisible({ timeout: 15000 });
+        await this.adminEditMerchantPage.coverageTabButton.click();
         //await this.coverageTabButton.click();
 
         await this.page.waitForTimeout(3000);
