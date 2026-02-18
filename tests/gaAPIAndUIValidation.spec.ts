@@ -8,6 +8,7 @@ import {CarrierPage} from '../src/pages/CarrierPage';
 import { GetGARequest } from '../src/api/request/GetGARequest';
 import { GetCarrierRequest } from '../src/api/request/GetCarrierRequest';
 import { GAPage } from '../src/pages/GAPage.spec';
+import { CoverageValidator } from '../src/validators/CoverageValidator';
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
@@ -28,6 +29,7 @@ test('GA API and UI Validation', async ({ page, request }) => {
     const editMerchantPage = new AdminEditMerchantPage(page);
     await editMerchantPage.goToDataSynchronization();
     await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+    await editMerchantPage.GATabButton.click();
     const GApage = new GAPage(page);
     const uiGAData = await GApage.getAllGAData();
     console.log("UI GA Data: ", uiGAData);
@@ -47,4 +49,16 @@ test('GA API and UI Validation', async ({ page, request }) => {
     const gaResponse = await GetGARequest.getGA(merchantId);
     expect(gaResponse.status()).toBe(200);
     const json = await gaResponse.json();
+
+    //validation
+        const mismatches = CoverageValidator.compareGAData(
+            json,
+            uiGAData
+        );
+        if (mismatches.length > 0) {
+            console.log("Mismatches found:");
+            mismatches.forEach((mismatch) => console.log(mismatch));
+        } else {
+            console.log("No mismatches found.");
+        }
 });

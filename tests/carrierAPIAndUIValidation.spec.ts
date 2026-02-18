@@ -4,11 +4,8 @@ import { AdminHomePage } from '../src/pages/AdminHomePage';
 import { AdminEditMerchantPage } from '../src/pages/AdminEditMerchantPage';
 import { ApiUtils, LoginPayload, LoginRequest, VariableFactory } from 'anddonejs1';
 import { LoginResponse } from 'anddonejs1/dist/api/response/login.response';
-import { GetProgramsRequest } from '../src/api/request/GetProgramsRequest';
-import { GetCoverageRequest } from '../src/api/request/GetCoverageRequests';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
 import {CarrierPage} from '../src/pages/CarrierPage';
-import { GetGARequest } from '../src/api/request/GetGARequest';
 import { GetCarrierRequest } from '../src/api/request/GetCarrierRequest';
 
 test.beforeAll(async () => {
@@ -30,6 +27,7 @@ test('Carrier API and UI Validation', async ({ page, request }) => {
     const editMerchantPage = new AdminEditMerchantPage(page);
     await editMerchantPage.goToDataSynchronization();
     await editMerchantPage.handleNoResultsAndSyncIfNeeded();
+    await editMerchantPage.carrierTabButton.click();
     const carrierPage = new CarrierPage(page);
     const uiCarrierData = await carrierPage.getAllCarrierData();
     console.log("UI Carrier Data: ", uiCarrierData);
@@ -49,4 +47,17 @@ test('Carrier API and UI Validation', async ({ page, request }) => {
     const carrierResponse = await GetCarrierRequest.getCarrier(merchantId);
     expect(carrierResponse.status()).toBe(200);
     const json = await carrierResponse.json();
+
+
+    //validation
+    const mismatches = CoverageValidator.compareCarrierData(
+        json,
+        uiCarrierData
+    );
+    if (mismatches.length > 0) {
+        console.log("Mismatches found:");
+        mismatches.forEach((mismatch) => console.log(mismatch));
+    } else {
+        console.log("No mismatches found.");
+    }
 });

@@ -236,7 +236,7 @@ test.describe('Coverage Name Filter Popup', () => {
         console.log('\n=== ALL SORTING TESTS PASSED ===');
     });
 
-    test.only('AN 27119 should verify pagination controls and navigation', async ({ page }) => {
+    test('AN 27119 should verify pagination controls and navigation', async ({ page }) => {
         console.log('\n=== TESTING PAGINATION CONTROLS ===');
         
         // Verify pagination controls are visible

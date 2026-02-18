@@ -51,6 +51,7 @@ export class AdminEditMerchantPage extends BasePage {
     programTabButton = this.page.locator('.segmented-button a').first();
     coverageTabButton = this.page.locator('.segmented-button a').nth(2);
     carrierTabButton = this.page.locator('.segmented-button a').filter({ hasText: 'Carrier' }).first();
+    brokerTabButton = this.page.locator('.segmented-button a').filter({ hasText: 'Broker' }).first();
     GATabButton = this.page.locator('.segmented-button a').last();
 
 
@@ -67,6 +68,15 @@ export class AdminEditMerchantPage extends BasePage {
         await expect(this.accessAndPermissionDisableToastMsg).toBeVisible({ timeout: 10000 });
         const toastText = await this.accessAndPermissionDisableToastMsg.textContent();
         expect(['Embedded  Premium  Finance and   Premium  Finance  Lite   Feature   Not   Enable', 'Quoting feature not enabled on   Merchant account']).toContain(toastText?.trim());
+    }
+
+    async waitForToastMessageToDisappear() {
+        try {
+            await this.accessAndPermissionDisableToastMsg.waitFor({ state: 'hidden', timeout: 15000 });
+        }
+        catch (err) {
+            console.warn("Toast message did not disappear within timeout: ", err);
+        }   
     }
 
     /**

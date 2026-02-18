@@ -51,17 +51,11 @@ test.describe("Carrier Filter and Sorting", () => {
         console.log(" Carrier table is visible");
     });
 
-    test.only("should open Name filter popup and validate filter behavior", async () => {
+    test("AN - 27286:should open Name filter popup and validate filter behavior", async () => {
         const initialNames = await carrierPage.getCarrierNames();
         console.log(`Initial names in table: ${initialNames.join(", ")}`);
 
-        //await carrierPage.enterNameInFilterAndApply("TRUCK");
-        // await carrierPage.enterNameInFilterAndApply("LIABILITY");
-        // await carrierPage.enterInvalidNameInFilterAndApply("XYZABC");
-        // await carrierPage.filterDataAndVerifyClearRestoresAllData("TRUCK");
-        // await carrierPage.enterNameInFilterAndApply("");
-        // await carrierPage.enterNameInFilterAndApply("TRUCK LIABILITY");
-
+       
         // Name Filter: Enter input in Name filter and validate results
         await carrierPage.enterInputInNameFilterAndValidateResults();
         await carrierPage.clearNameFilterAndValidateResults();
@@ -75,7 +69,7 @@ test.describe("Carrier Filter and Sorting", () => {
         await carrierPage.clearIPFSNameFilterAndValidateResults();
     });
 
-    test("should filter by IPFS Mapped YES and verify all pages show only YES records", async () => {
+    test("AN - 27283:should filter by IPFS Mapped YES and verify all pages show only YES records", async () => {
         console.log("\n=== Testing IPFS Mapped Filter: YES ===");
 
         await carrierPage.selectIpfsMappedFilterAndApply("YES");
@@ -87,7 +81,7 @@ test.describe("Carrier Filter and Sorting", () => {
         await carrierPage.verifyIpfsMappedValuesAcrossAllPages("NO");
     });
 
-    test("should filter by Status Active and verify all pages show only Active records", async () => {
+    test("AN - 27286:should filter by Status Active and verify all pages show only Active records", async () => {
         console.log("\n=== Testing Status Filter: Active ===");
 
         await carrierPage.selectStatusFilterAndApply("Active");
@@ -97,7 +91,7 @@ test.describe("Carrier Filter and Sorting", () => {
         await carrierPage.verifyStatusValuesAcrossAllPages("Inactive");
     });
 
-    test("should filter by Portal Status Active and verify all pages show only Active records", async () => {
+    test("AN - 27286:should filter by Portal Status Active and verify all pages show only Active records", async () => {
         console.log("\n=== Testing Portal Status Filter: Active ===");
 
         await carrierPage.selectPortalStatusFilterAndApply("Active");
@@ -109,7 +103,7 @@ test.describe("Carrier Filter and Sorting", () => {
         await carrierPage.verifyPortalStatusValuesAcrossAllPages("Inactive");
     });
 
-    test("should sort columns with ascending/descending toggle", async ({ page }) => {
+    test("AN - 27285:should sort columns with ascending/descending toggle", async ({ page }) => {
         console.log("\n=== TESTING COLUMN SORTING WITH TOGGLE ===");
 
         console.log("\n--- NAME COLUMN SORT TOGGLE ---");
@@ -181,7 +175,7 @@ test.describe("Carrier Filter and Sorting", () => {
         console.log("\n=== ALL SORTING TESTS PASSED ===");
     });
 
-    test("should verify pagination controls and navigation", async () => {
+    test("AN - 27282:should verify pagination controls and navigation", async () => {
         console.log("\n=== TESTING PAGINATION CONTROLS ===");
 
         const paginationInfo = await carrierPage.verifyPaginationControls();
@@ -242,7 +236,7 @@ test.describe("Carrier Filter and Sorting", () => {
         console.log("\n=== PAGINATION TESTS PASSED ===");
     });
 
-    test("should verify items per page functionality", async ({ page }) => {
+    test("AN -27287:should verify items per page functionality", async ({ page }) => {
         const paginationInfo = await carrierPage.verifyPaginationControls();
         console.log(`\nInitial pagination: ${paginationInfo.totalPages} total pages`);
 
@@ -271,7 +265,7 @@ test.describe("Carrier Filter and Sorting", () => {
         console.log("\n=== ITEMS PER PAGE TEST COMPLETED ===");
     });
 
-    test("should verify that filter and pagination work together correctly", async () => {
+    test("AN - 27282, AN - 27286:should verify that filter and pagination work together correctly", async () => {
         console.log("\n=== TESTING FILTER AND PAGINATION TOGETHER ===");
         await carrierPage.enterNameInFilterAndApply("A");
         const filteredNames = await carrierPage.getCarrierNames();
@@ -287,4 +281,73 @@ test.describe("Carrier Filter and Sorting", () => {
         }
         console.log("\n=== FILTER AND PAGINATION TOGETHER TEST COMPLETED ===");
     });
+});
+
+test.describe("Carrier Access Setting and permission setting disable", () => {
+    let adminPage: AdminPage;
+    let adminHomePage: AdminHomePage;
+    let adminEditMerchantPage: AdminEditMerchantPage;
+    let carrierPage: CarrierPage;
+
+    test.beforeEach(async ({ page }) => {
+        test.setTimeout(120000);
+
+        adminPage = new AdminPage(page);
+        adminHomePage = new AdminHomePage(page);
+        adminEditMerchantPage = new AdminEditMerchantPage(page);
+        carrierPage = new CarrierPage(page);
+
+        await page.goto("https://admin.qat.anddone.com/#/login", {
+            waitUntil: "domcontentloaded",
+        });
+
+        await adminPage.login("AdminTejasUser", "Tejasadmin@1111");
+
+        await expect(adminHomePage.logo).toBeVisible({ timeout: 10000 });
+        const isLogoVisible = await adminHomePage.isLogoDisplayed();
+        expect(isLogoVisible).toBeTruthy();
+        console.log(" Homepage logo is displayed");
+
+        await expect(adminHomePage.searchInput).toBeVisible({ timeout: 10000 });
+        await page.waitForTimeout(1000);
+
+        await adminHomePage.searchByDBAAndValidate("PFTADToggleOFFCN");
+        await adminHomePage.openActionDropdownAndValidate();
+        await adminHomePage.clickEditSubMerchantDetails();
+        console.log(" Navigated to Edit Merchant Page");
+
+        await adminEditMerchantPage.goToDataSynchronization();
+        await adminEditMerchantPage.handleNoResultsAndSyncIfNeeded();
+        console.log(" Navigated to Data Synchronization");
+
+        await expect(adminEditMerchantPage.carrierTabButton).toBeVisible({ timeout: 15000 });
+        await adminEditMerchantPage.carrierTabButton.click();
+        await page.waitForTimeout(3000);
+        console.log(" Switched to Carrier tab");
+
+        await expect(carrierPage.carrierTable).toBeVisible({ timeout: 15000 });
+        console.log(" Carrier table is visible");
+    });
+
+    test('AN - 27277, AN -27278:Carriers tab loads with table headers', async () => {
+        const headers = await carrierPage.getAllTableHeadersText();
+        expect(headers).toContain("Name");
+        expect(headers).toContain("AD ID");
+        expect(headers).toContain("Customer ID");
+        expect(headers).toContain("IPFS Name");
+        expect(headers).toContain("IPFS Mapped");
+        expect(headers).toContain("Quote Eligibile");
+        expect(headers).toContain("Auto Eligibile");
+        expect(headers).toContain("Updated On");
+        expect(headers).toContain("Created On");
+        expect(headers).toContain("Status");
+        expect(headers).toContain("Portal Status");
+        console.log("✓ Carriers tab loads with table headers");
+
+        expect(adminEditMerchantPage.noResultsMsg).toBeVisible({ timeout: 15000 });
+        const noResultsText = await adminEditMerchantPage.noResultsMsg.innerText();
+        expect(noResultsText.trim()).toBe("No Results Found");
+        console.log("✓ 'No Results Found' message is displayed when there are no carriers");
+    });
+
 });
