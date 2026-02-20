@@ -3,6 +3,7 @@ import { AdminPage } from "../src/pages/AdminLoginPage";
 import { AdminHomePage } from "../src/pages/AdminHomePage";
 import { AdminEditMerchantPage } from "../src/pages/AdminEditMerchantPage";
 import { CarrierPage } from "../src/pages/CarrierPage";
+import { getEnv } from "../src/CommonUtils/envUtils";
 
 
 test.describe("Carrier Filter and Sorting", () => {
@@ -297,11 +298,11 @@ test.describe("Carrier Access Setting and permission setting disable", () => {
         adminEditMerchantPage = new AdminEditMerchantPage(page);
         carrierPage = new CarrierPage(page);
 
-        await page.goto("https://admin.qat.anddone.com/#/login", {
-            waitUntil: "domcontentloaded",
-        });
+         await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
 
-        await adminPage.login("AdminTejasUser", "Tejasadmin@1111");
+        await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
 
         await expect(adminHomePage.logo).toBeVisible({ timeout: 10000 });
         const isLogoVisible = await adminHomePage.isLogoDisplayed();
@@ -311,7 +312,7 @@ test.describe("Carrier Access Setting and permission setting disable", () => {
         await expect(adminHomePage.searchInput).toBeVisible({ timeout: 10000 });
         await page.waitForTimeout(1000);
 
-        await adminHomePage.searchByDBAAndValidate("PFTADToggleOFFCN");
+        await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
         await adminHomePage.openActionDropdownAndValidate();
         await adminHomePage.clickEditSubMerchantDetails();
         console.log(" Navigated to Edit Merchant Page");

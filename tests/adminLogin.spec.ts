@@ -4,6 +4,7 @@ import { commonUtils } from "@siddheshwar.anajekar/common-base";
 import { AdminHomePage } from '../src/pages/AdminHomePage';
 import { AdminEditMerchantPage } from '../src/pages/AdminEditMerchantPage';
 import { CoveragePage } from '../src/pages/CoveragePage';
+import { getEnv } from '../src/CommonUtils/envUtils';
 
 // test('Admin should login successfully', async ({ page }) => {
 //   test.setTimeout(120000);
@@ -78,13 +79,13 @@ test('Data sync :Verify validation message for access and permission setting dis
      test.setTimeout(120000);
   const adminPage = new AdminPage(page);
 
-  await page.goto('https://admin.qat.anddone.com/#/login', {
+  await page.goto(getEnv('ADMIN_URL'), {
     waitUntil: 'domcontentloaded',
   });
 
-  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
   const adminHomePage = new AdminHomePage(page);
-  await adminHomePage.searchByDBAAndValidate('PFTADToggleOFFCN');
+  await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
   await adminHomePage.openActionDropdownAndValidate();
   await adminHomePage.clickEditSubMerchantDetails();
   const editMerchantPage = new AdminEditMerchantPage(page);
