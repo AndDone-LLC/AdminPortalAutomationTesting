@@ -19,7 +19,7 @@ test.beforeAll(async () => {
 });
 
 // Get Program Data from UI
-test.only('UI Flow - Extract Program Data', async ({ page }) => {
+test('UI Flow - Extract Program Data', async ({ page }) => {
 
   test.setTimeout(120000);
   const adminPage = new AdminPage(page);
