@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -19,24 +20,24 @@ test.describe('Coverage Name Filter Popup', () => {
         adminEditMerchantPage = new AdminEditMerchantPage(page);
         coveragePage = new CoveragePage(page);
         // Login to admin portal
-        await page.goto('https://admin.qat.anddone.com/#/login', {
+        await page.goto(config.baseUrl + '/login', {
             waitUntil: 'domcontentloaded',
         });
 
-        await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+        await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
 
         // Wait for and verify homepage logo is displayed
         await expect(adminHomePage.logo).toBeVisible({ timeout: 10000 });
         const isLogoVisible = await adminHomePage.isLogoDisplayed();
         expect(isLogoVisible).toBeTruthy();
         console.log(" Homepage logo is displayed");
-        
+
         // Wait for search input to be ready
         await expect(adminHomePage.searchInput).toBeVisible({ timeout: 10000 });
         await page.waitForTimeout(1000);
 
         // Search for merchant and navigate to edit page
-        await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+        await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
         await adminHomePage.openActionDropdownAndValidate();
         await adminHomePage.clickEditSubMerchantDetails();
         console.log(" Navigated to Edit Merchant Page");

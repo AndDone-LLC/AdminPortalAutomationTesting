@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -18,9 +19,10 @@ test.beforeAll(async () => {
 test('API Flow - Get GA', async ({ request }) => {
 
     ApiUtils.setRequest(request);
-    const userName = "tejasmerchant3";
-    const password = "Tejasmerchant@11";
-    const loginPay = LoginPayload.getPayload({ userName, password });
+        const loginPay = LoginPayload.getPayload({
+            userName: process.env.ADMIN_USERNAME ?? '',
+            password: process.env.ADMIN_PASSWORD ?? ''
+        });
     await ApiUtils.setResponse(
         await LoginRequest.login(loginPay, {
             origin: VariableFactory.getMerchantPortalUrl()

@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -9,7 +10,7 @@ import { GetCoverageRequest } from '../src/api/request/GetCoverageRequests';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
 import { BrokerPage } from '../src/pages/BrokerPage';
 import { GetBrokerRequest } from '../src/api/request/GetBrokerRequest';
-import { getEnv } from '../src/CommonUtils/envUtils';
+import { getEnv } from '../src/config/envUtils';
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
@@ -22,12 +23,12 @@ test('(AN-T27295), (AN-T27293), (AN-T27290), (AN-T27289), (AN-T27291) UI Flow - 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -46,12 +47,12 @@ test('(AN-T27297) Check Status column by selcting Active/Inactive', async ({ pag
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
