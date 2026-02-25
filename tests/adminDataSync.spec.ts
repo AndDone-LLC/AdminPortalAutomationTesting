@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+import { config } from '../src/config/config';
+dotenv.config();
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -8,22 +11,28 @@ import { GetProgramsRequest } from '../src/api/request/GetProgramsRequest';
 import { GetCoverageRequest } from '../src/api/request/GetCoverageRequests';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
 import { CoveragePage } from '../src/pages/CoveragePage';
+import { getEnv } from '../src/config/envUtils';
+
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
 });
 
 // Get Program Data from UI
-test('UI Flow - Extract Program Data', async ({ page }) => {
+test.only('UI Flow - Extract Program Data', async ({ page }) => {
 
   test.setTimeout(120000);
   const adminPage = new AdminPage(page);
-  await page.goto('https://admin.qat.anddone.com/#/login', {
+  // await page.goto('https://admin.qat.anddone.com/#/login', {
+  //   waitUntil: 'domcontentloaded',
+  // });
+
+  await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
   const adminHomePage = new AdminHomePage(page);
-  await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+  await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
   await adminHomePage.openActionDropdownAndValidate();
   await adminHomePage.clickEditSubMerchantDetails();
   const editMerchantPage = new AdminEditMerchantPage(page);
@@ -41,12 +50,12 @@ test('UI Flow - Extract Coverage Data', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
+    await page.goto(config.baseUrl + '/login', {
+      waitUntil: 'domcontentloaded',
     });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -114,13 +123,13 @@ test('Validate Program Data - UI vs API', async ({ page, request }) => {
   test.setTimeout(180000);
   // ---------- UI FLOW ----------
   const adminPage = new AdminPage(page);
-  await page.goto('https://admin.qat.anddone.com/#/login', {
+   await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
 
-  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
   const adminHomePage = new AdminHomePage(page);
-  await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+  await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
   await adminHomePage.openActionDropdownAndValidate();
   await adminHomePage.clickEditSubMerchantDetails();
   const editMerchantPage = new AdminEditMerchantPage(page);
@@ -132,8 +141,8 @@ test('Validate Program Data - UI vs API', async ({ page, request }) => {
 
   ApiUtils.setRequest(request);
   const loginPay = LoginPayload.getPayload({
-    userName: "tejasmerchant3",
-    password: "Tejasmerchant@11"
+    userName: process.env.ADMIN_USERNAME ?? '',
+    password: process.env.ADMIN_PASSWORD ?? ''
   });
 
   await ApiUtils.setResponse(
@@ -164,13 +173,13 @@ test('Validate Coverage Data - UI vs API', async ({ page, request }) => {
 
   // ---------- UI FLOW ----------
   const adminPage = new AdminPage(page);
-  await page.goto('https://admin.qat.anddone.com/#/login', {
+   await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
 
-  await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+  await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
   const adminHomePage = new AdminHomePage(page);
-  await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+  await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
   await adminHomePage.openActionDropdownAndValidate();
   await adminHomePage.clickEditSubMerchantDetails();
   const editMerchantPage = new AdminEditMerchantPage(page);
@@ -183,8 +192,8 @@ test('Validate Coverage Data - UI vs API', async ({ page, request }) => {
 
   ApiUtils.setRequest(request);
   const loginPay = LoginPayload.getPayload({
-    userName: "tejasmerchant3",
-    password: "Tejasmerchant@11"
+    userName: process.env.ADMIN_USERNAME ?? '',
+    password: process.env.ADMIN_PASSWORD ?? ''
   });
 
   await ApiUtils.setResponse(

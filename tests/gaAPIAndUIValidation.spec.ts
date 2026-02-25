@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -18,12 +19,12 @@ test('GA API and UI Validation', async ({ page, request }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
+    await page.goto(config.baseUrl + '/login', {
         waitUntil: 'domcontentloaded',
     });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);  
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);

@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -9,6 +10,7 @@ import { GetCoverageRequest } from '../src/api/request/GetCoverageRequests';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
 import { BrokerPage } from '../src/pages/BrokerPage';
 import { GetBrokerRequest } from '../src/api/request/GetBrokerRequest';
+import { getEnv } from '../src/config/envUtils';
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
@@ -21,12 +23,12 @@ test('(AN-T27295), (AN-T27293), (AN-T27290), (AN-T27289), (AN-T27291) UI Flow - 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    await page.goto(config.baseUrl + '/login', {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -45,12 +47,12 @@ test('(AN-T27297) Check Status column by selcting Active/Inactive', async ({ pag
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    await page.goto(config.baseUrl + '/login', {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -76,12 +78,12 @@ test('(AN-T27297) Check Portal Status by clicking on Active/Inactive', async ({ 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -138,12 +140,12 @@ test('(AN-T27297) Check Updated On Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -166,12 +168,12 @@ test('(AN-T27297) Check Created dated On Filter functionality', async ({ page })
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -224,12 +226,12 @@ test('(AN-T27297) Verify Name Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -248,12 +250,12 @@ test('(AN-T27297) Verify AD ID Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -272,12 +274,12 @@ test('(AN-T27297) Verify Customer ID Filter functionality', async ({ page }) => 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -297,12 +299,12 @@ test('(AN-T27297) Verify IPFS Name Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -321,12 +323,12 @@ test('(AN-T27294) Verify Multiple Filters Together with pagination', async ({ pa
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -371,13 +373,13 @@ test('(AN-T27292), (AN-T27296) Validate Broker Data - UI vs API', async ({ page,
 
     // ---------- UI FLOW ----------
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
-        waitUntil: 'domcontentloaded',
-    });
+     await page.goto(getEnv('ADMIN_URL'), {
+    waitUntil: 'domcontentloaded',
+  });
 
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
+    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);

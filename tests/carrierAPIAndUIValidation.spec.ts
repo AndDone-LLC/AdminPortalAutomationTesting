@@ -1,3 +1,4 @@
+import { config } from '../src/config/config';
 import { test, expect } from '@playwright/test';
 import { AdminPage } from '../src/pages/AdminLoginPage';
 import { AdminHomePage } from '../src/pages/AdminHomePage';
@@ -7,6 +8,8 @@ import { LoginResponse } from 'anddonejs1/dist/api/response/login.response';
 import { CoverageValidator } from '../src/validators/CoverageValidator';
 import {CarrierPage} from '../src/pages/CarrierPage';
 import { GetCarrierRequest } from '../src/api/request/GetCarrierRequest';
+import { getEnv } from '../src/config/envUtils';
+import { get } from 'node:http';
 
 test.beforeAll(async () => {
     VariableFactory.setEnvorimentData('qat');
@@ -16,12 +19,12 @@ test('Carrier API and UI Validation', async ({ page, request }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-    await page.goto('https://admin.qat.anddone.com/#/login', {
+        await page.goto(config.baseUrl + '/login', {
         waitUntil: 'domcontentloaded',
     });
-    await adminPage.login('AdminTejasUser', 'Tejasadmin@1111');
-    const adminHomePage = new AdminHomePage(page);  
-    await adminHomePage.searchByDBAAndValidate('tejasmerchant3');
+        await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
+        const adminHomePage = new AdminHomePage(page);  
+        await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME_SETTING_OFF ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -34,9 +37,10 @@ test('Carrier API and UI Validation', async ({ page, request }) => {
     console.log("");
 
     ApiUtils.setRequest(request);
-    const userName = "tejasmerchant3";
-    const password = "Tejasmerchant@11";
-    const loginPay = LoginPayload.getPayload({ userName, password });
+        const loginPay = LoginPayload.getPayload({
+            userName: process.env.ADMIN_USERNAME ?? '',
+            password: process.env.ADMIN_PASSWORD ?? ''
+        });
     await ApiUtils.setResponse(
         await LoginRequest.login(loginPay, {
             origin: VariableFactory.getMerchantPortalUrl()
