@@ -78,12 +78,12 @@ test('(AN-T27297) Check Portal Status by clicking on Active/Inactive', async ({ 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+     await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -140,12 +140,12 @@ test('(AN-T27297) Check Updated On Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+     await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
-    await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
+    await adminHomePage.searchByDBAAndValidate(process.env.MERCHANT_DBA_NAME ?? '');
     await adminHomePage.openActionDropdownAndValidate();
     await adminHomePage.clickEditSubMerchantDetails();
     const editMerchantPage = new AdminEditMerchantPage(page);
@@ -168,10 +168,10 @@ test('(AN-T27297) Check Created dated On Filter functionality', async ({ page })
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -226,10 +226,10 @@ test('(AN-T27297) Verify Name Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+     await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -250,10 +250,10 @@ test('(AN-T27297) Verify AD ID Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -274,10 +274,10 @@ test('(AN-T27297) Verify Customer ID Filter functionality', async ({ page }) => 
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+   await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -299,10 +299,10 @@ test('(AN-T27297) Verify IPFS Name Filter functionality', async ({ page }) => {
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -323,10 +323,10 @@ test('(AN-T27294) Verify Multiple Filters Together with pagination', async ({ pa
 
     test.setTimeout(120000);
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
@@ -373,11 +373,10 @@ test('(AN-T27292), (AN-T27296) Validate Broker Data - UI vs API', async ({ page,
 
     // ---------- UI FLOW ----------
     const adminPage = new AdminPage(page);
-     await page.goto(getEnv('ADMIN_URL'), {
+    await page.goto(config.baseUrl + '/login', {
     waitUntil: 'domcontentloaded',
   });
-
-    await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+    await adminPage.login(process.env.ADMIN_USERNAME ?? '', process.env.ADMIN_PASSWORD ?? '');
     const adminHomePage = new AdminHomePage(page);
     await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
     await adminHomePage.openActionDropdownAndValidate();
