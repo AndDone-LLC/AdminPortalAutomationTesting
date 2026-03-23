@@ -139,5 +139,10 @@ export class AdminHomePage extends BasePage {
             { timeout: 10000 }
         );
     }
+async clickonAddSubmerchantButton()
+{
+    await CommonUtils.click(this.addSubMerchantBtn)
+}
 
-}   
+    
+}  
