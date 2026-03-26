@@ -14,7 +14,8 @@ on:
 
 jobs:
   playwright-test:
-    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}   # FIXED
+    runs-on: ubuntu-latest                                # FIXED ORDER
 
     env:
       APP_ENV: ${{ github.event.inputs.environment }}
