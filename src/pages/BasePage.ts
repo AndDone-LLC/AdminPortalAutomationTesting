@@ -1,11 +1,10 @@
 import type { Page, Locator } from "@playwright/test";
-import { CommonUtils } from "@anddone/coretestautomation/dist";
+// import { CommonUtils } from "@anddone/coretestautomation/dist";
 
 // import { commonUtils } from "@siddheshwar.anajekar/common-base";
 
 export class BasePage {
   readonly page: Page; // Playwright Page object
-  readonly utils: CommonUtils;
 
   readonly itemsPerPageDropdown: Locator;
   readonly itemsPerPageOptions: Locator;
@@ -14,7 +13,6 @@ export class BasePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.utils = new CommonUtils();
 
     this.itemsPerPageDropdown = page.locator("#maxPerPage");
     this.itemsPerPageOptions = page.locator("#maxPerPage option");
