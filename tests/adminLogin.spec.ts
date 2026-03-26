@@ -7,18 +7,34 @@ import { commonUtils } from "@siddheshwar.anajekar/common-base";
 import { AdminHomePage } from '../src/pages/AdminHomePage';
 import { AdminEditMerchantPage } from '../src/pages/AdminEditMerchantPage';
 import { CoveragePage } from '../src/pages/CoveragePage';
-import { getEnv } from '../src/config/envUtils';
+
+// Helper to get env-specific credentials
+const getEnvCredentials = () => {
+  const env = process.env.TEST_ENV || 'QAT';
+  if (env === 'UAT') {
+    return {
+      url: process.env.UAT_URL,
+      username: process.env.UAT_USERNAME,
+      password: process.env.UAT_PASSWORD,
+    };
+  }
+  return {
+    url: process.env.QAT_URL,
+    username: process.env.QAT_USERNAME,
+    password: process.env.QAT_PASSWORD,
+  };
+};
 
 test('Data sync :Verify validation message for access and permission setting disable ',async({page})=>
 {
      test.setTimeout(120000);
   const adminPage = new AdminPage(page);
 
-  await page.goto(getEnv('ADMIN_URL'), {
+  const { url, username, password } = getEnvCredentials();
+  await page.goto(url, {
     waitUntil: 'domcontentloaded',
   });
-
-  await adminPage.login(getEnv('ADMIN_USERNAME'), getEnv('ADMIN_PASSWORD'));
+  await adminPage.login(username, password);
   const adminHomePage = new AdminHomePage(page);
   await adminHomePage.searchByDBAAndValidate(getEnv('MERCHANT_DBA_NAME'));
   await adminHomePage.openActionDropdownAndValidate();
