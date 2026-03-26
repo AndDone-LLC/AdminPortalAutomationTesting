@@ -1,14 +1,10 @@
 import { Page } from "@playwright/test";
-// import { commonUtils } from "@siddheshwar.anajekar/common-base";
-import { CommonUtils } from '@anddone/coretestautomation/dist';
 import { BasePage } from "./BasePage";
 
 export class AdminPage extends BasePage {
-    public utils: CommonUtils;
 
     constructor(page: Page) {
         super(page);
-        this.utils = new CommonUtils();
     }
 
     usernameInput = this.page.getByRole('textbox', { name: '*Username' });
@@ -22,9 +18,9 @@ export class AdminPage extends BasePage {
      */
     async login(username: string, password: string) {
 
-        await CommonUtils.fill(this.usernameInput, username);
-        await CommonUtils.fill(this.passwordInput, password);
-        await CommonUtils.click(this.loginBtn);
+        await this.usernameInput.fill(username);
+        await this.passwordInput.fill(password);
+        await this.loginBtn.click();
         // Wait for URL change instead of networkidle
         await this.page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 }).catch(() => {});
         await this.page.waitForURL('**/admin/**', { timeout: 30000 });
