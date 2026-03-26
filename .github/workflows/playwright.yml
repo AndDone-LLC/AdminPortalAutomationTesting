@@ -14,8 +14,8 @@ on:
 
 jobs:
   playwright-test:
-    environment: ${{ github.event.inputs.environment }}   # FIXED
-    runs-on: ubuntu-latest                                # FIXED ORDER
+    environment: ${{ github.event.inputs.environment }}   # Loads correct environment secrets
+    runs-on: ubuntu-latest
 
     env:
       APP_ENV: ${{ github.event.inputs.environment }}
@@ -40,22 +40,33 @@ jobs:
 
       - name: Set environment variables based on selection
         run: |
+          echo "Running on environment: ${APP_ENV}"
+
+          # QAT environment secrets
           if [ "${APP_ENV}" = "QAT" ]; then
             echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> $GITHUB_ENV
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> $GITHUB_ENV
-          elif [ "${APP_ENV}" = "UAT" ]; then
+          fi
+
+          # UAT environment secrets
+          if [ "${APP_ENV}" = "UAT" ]; then
             echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> $GITHUB_ENV
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> $GITHUB_ENV
-          elif [ "${APP_ENV}" = "DEV" ]; then
-            echo "BASE_URL=${{ secrets.DEV_BASE_URL }}" >> $GITHUB_ENV
-            echo "ADMIN_USERNAME=${{ secrets.DEV_ADMIN_USERNAME }}" >> $GITHUB_ENV
-            echo "ADMIN_PASSWORD=${{ secrets.DEV_ADMIN_PASSWORD }}" >> $GITHUB_ENV
+          fi
+
+          # DEV environment secrets
+          if [ "${APP_ENV}" = "DEV" ]; then
+            echo "BASE_URL=${{ secrets.BASE_URL }}" >> $GITHUB_ENV
+            echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> $GITHUB_ENV
+            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> $GITHUB_ENV
           fi
 
       - name: Run Playwright Tests
-        run: npx playwright test
+        run: |
+          echo "Using BASE_URL=$BASE_URL"
+          npx playwright test
 
       - name: Upload Playwright Report
         if: always()
