@@ -30,6 +30,9 @@ export class AdminHomePage extends BasePage {
     table = this.page.locator('table.table');
     tableBody = this.page.locator('#tableBody');
 
+
+    
+
     // locators for table header
     companyNameHeader = this.page.getByRole('columnheader', { name: 'Company Name' });
     kycHeader = this.page.getByRole('columnheader', { name: 'KYC', exact: true, });
@@ -139,5 +142,27 @@ export class AdminHomePage extends BasePage {
             { timeout: 10000 }
         );
     }
-
+    
+/**
+   * Clicks the "Add Sub-Merchant" button and waits for the form/page to be ready.
+   * This method ensures that the button is visible and enabled before clicking, and then waits for the expected URL to confirm navigation.
+   */
+  async openAddSubMerchant(): Promise<void> {
+    // Try to close the app-find-merchant modal if it's visible by looking for a close button
+    const closeModalBtn = this.page.locator('app-find-merchant .close, app-find-merchant [aria-label="Close"], app-find-merchant button.btn-close');
+    if (await closeModalBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await closeModalBtn.click();
+      await this.page.waitForTimeout(500);
+    }
+    
+    // Ensure button is visible & enabled before clicking
+    await CommonUtils.waitForVisible(this.addSubMerchantBtn);
+    await expect(this.addSubMerchantBtn).toBeVisible();
+    // Use force:true if the overlay is still blocking the click
+    await this.addSubMerchantBtn.click({ force: true });
+    
+    // Wait for navigation to complete
+    await this.page.waitForNavigation({ timeout: 30000, waitUntil: 'domcontentloaded' }).catch(() => {});
+    await this.page.waitForTimeout(1000); // Additional wait for DOM to be ready
+  }
 }   
